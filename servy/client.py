@@ -5,22 +5,27 @@ import urllib2
 
 
 class Proxy(object):
-    def __init__(self, server, name):
-        self.server = server
-        self.name = name
+    def __init__(self, service, name):
+        self._service = service
+        self._name = name
+
+    def __getattr__(self, name):
+        name = '{}.{}'.format(self._name, name)
+        return Proxy(self._service, name)
 
     def __call__(self, *args, **kw):
-        payload = pickle.dumps((self.name, args, kw))
-        request = urllib2.urlopen(self.server, payload)
+        payload = pickle.dumps((self._name, args, kw))
+        request = urllib2.urlopen(self._service, payload)
         content = request.read()
         return pickle.loads(content)
 
 
-class Client(object):
-    def __init__(self, host, port):
-        self._server = 'http://{host}:{port}'.format(
+class Service(object):
+    def __init__(self, service, host, port):
+        self._server = 'http://{host}:{port}/{service}'.format(
             host=host,
             port=port,
+            service=service,
         )
 
     def __getattr__(self, name):

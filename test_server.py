@@ -11,7 +11,7 @@ class Service(object):
 
 
 server = servy.server.Server(
-    service=Service
+    processor=Service
 )
 
 
