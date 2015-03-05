@@ -15,6 +15,7 @@ class Server(object):
     def __call__(self, request):
         if request.method == 'POST':
             return self.rpc(request)
+        raise webob.exc.HTTPMethodNotAllowed
 
     def rpc(self, request):
         service = request.path[1:]
