@@ -4,14 +4,14 @@ import wsgiref.simple_server
 
 import servy.server
 
-class Service(object):
+class Echo(object):
     @classmethod
-    def process(cls, data):
-        return 'result' + data
+    def echo(cls, data):
+        return 'echo: {}'.format(data)
 
 
 server = servy.server.Server(
-    processor=Service
+    echo=Echo
 )
 
 

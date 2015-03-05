@@ -2,10 +2,10 @@ from __future__ import absolute_import
 
 import servy.client
 
-service = servy.client.Service('processor', 'localhost', 8000)
+echo = servy.client.Service('echo', 'localhost', 8000)
 
 def main():
-    return service.process('anything')
+    return echo.echo('anything')
 
 if __name__ == '__main__':
     print main()
