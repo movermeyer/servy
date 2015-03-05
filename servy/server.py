@@ -1,35 +1,38 @@
 from __future__ import absolute_import
 
+import webob.exc
+import webob.dec
+import webob.response
+
 import pickle
-import pprint
 
 
 class Server(object):
     def __init__(self, **services):
         self.services = services
 
-    def serve(self, environ):
-        content_length = int(environ['CONTENT_LENGTH'])
-        content = environ['wsgi.input'].read(content_length)
-        endpoint, args, kw = pickle.loads(content)
-        name = environ['PATH_INFO'][1:]
-        service = self.services[name]
-        endpoint = self.get_endpoint(service, endpoint)
-        result = endpoint(*args, **kw)
-        return pickle.dumps(result)
+    @webob.dec.wsgify
+    def __call__(self, request):
+        if request.method == 'POST':
+            return self.rpc(request)
 
-    def get_endpoint(self, service, endpoint):
-        for attr in endpoint.split('.'):
+    def rpc(self, request):
+        service = request.path[1:]
+        if service not in self.services:
+            raise webob.exc.HTTPNotFound
+
+        service = self.services[service]
+
+        try:
+            procedure, args, kw = pickle.load(request.body_file)
+        except:
+            raise webob.exc.HTTPBadRequest
+
+        for attr in procedure.split('.'):
+            if not hasattr(service, attr):
+                raise webob.exc.HTTPNotImplemented
             service = getattr(service, attr)
-        return service
 
-    def wsgi_app(self, environ, start_response):
-        status = '200 OK'
-        headers = [('Content-type', 'text/plain')]
-
-        request_method = environ['REQUEST_METHOD']
-        if request_method == 'POST':
-            content = self.serve(environ)
-
-        start_response(status, headers)
-        return content
+        content = service(*args, **kw)
+        content = pickle.dumps(content)
+        return webob.response.Response(content)

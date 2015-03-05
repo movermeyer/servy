@@ -16,7 +16,7 @@ server = servy.server.Server(
 
 
 def main():
-    httpd = wsgiref.simple_server.make_server('', 8000, server.wsgi_app)
+    httpd = wsgiref.simple_server.make_server('', 8000, server)
     httpd.serve_forever()
 
 if __name__ == '__main__':
