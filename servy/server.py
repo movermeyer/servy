@@ -4,7 +4,7 @@ import webob.exc
 import webob.dec
 import webob.response
 
-import pickle
+import servy.proto as proto
 
 
 class Server(object):
@@ -25,7 +25,7 @@ class Server(object):
         service = self.services[service]
 
         try:
-            procedure, args, kw = pickle.load(request.body_file)
+            procedure, args, kw = proto.Server.decode(request.body)
         except:
             raise webob.exc.HTTPBadRequest
 
@@ -35,5 +35,5 @@ class Server(object):
             service = getattr(service, attr)
 
         content = service(*args, **kw)
-        content = pickle.dumps(content)
+        content = proto.Server.encode(content)
         return webob.response.Response(content)

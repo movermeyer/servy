@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
 import os
-import pickle
 import urllib2
+
+import servy.proto as proto
 
 
 class Service(object):
@@ -20,7 +21,7 @@ class Service(object):
 
     def __call__(self, *args, **kw):
         url = os.path.join(*(c or '' for c in (self.__url, self.__service)))
-        payload = pickle.dumps((self.__proc, args, kw))
+        payload = proto.Client.encode(self.__proc, args, kw)
         try:
             request = urllib2.urlopen(url, payload)
         except urllib2.HTTPError as e:
@@ -34,4 +35,4 @@ class Service(object):
             else:
                 raise
         content = request.read()
-        return pickle.loads(content)
+        return proto.Client.decode(content)
