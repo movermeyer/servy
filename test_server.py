@@ -4,7 +4,16 @@ import wsgiref.simple_server
 
 import servy.server
 
+class Parser(object):
+    @classmethod
+    def parse_details(cls, data):
+        return data.get('details')
+
+
 class Echo(object):
+
+    parser = Parser()
+
     @classmethod
     def echo(cls, data):
         return 'echo: {}'.format(data)
