@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import servy.client
 
-echo = servy.client.Service('echo', 'localhost', 8000)
+echo = servy.client.Service('echo', 'http://localhost:8000/')
 
 def main():
     return echo.parser.parse_details({'details': 'anything1'})
