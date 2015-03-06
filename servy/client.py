@@ -21,7 +21,7 @@ class Service(object):
 
     def __call__(self, *args, **kw):
         url = os.path.join(*(c or '' for c in (self.__url, self.__service)))
-        payload = proto.Client.encode(self.__proc, args, kw)
+        payload = proto.Request.encode(self.__proc, args, kw)
         try:
             request = urllib2.urlopen(url, payload)
         except urllib2.HTTPError as e:
@@ -35,4 +35,4 @@ class Service(object):
             else:
                 raise
         content = request.read()
-        return proto.Client.decode(content)
+        return proto.Response.decode(content)

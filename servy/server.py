@@ -25,7 +25,7 @@ class Server(object):
         service = self.services[service]
 
         try:
-            procedure, args, kw = proto.Server.decode(request.body)
+            procedure, args, kw = proto.Request.decode(request.body)
         except:
             raise webob.exc.HTTPBadRequest
 
@@ -35,5 +35,5 @@ class Server(object):
             service = getattr(service, attr)
 
         content = service(*args, **kw)
-        content = proto.Server.encode(content)
+        content = proto.Response.encode(content)
         return webob.response.Response(content)
