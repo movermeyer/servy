@@ -1,29 +1,65 @@
 import json
 
-class Response(object):
+
+class Message(object):
+    pass
+
+
+class Response(Message):
+    name = 'response'
+
     @classmethod
     def encode(cls, content):
-        return json.dumps(content)
+        message = {
+            'message': cls.name,
+            'content': content,
+        }
+        return json.dumps(message)
 
     @classmethod
     def decode(cls, content):
-        return json.loads(content)
+        message = json.loads(content)
+        return message['content']
 
 
-class Request(object):
+class Request(Message):
+    name = 'request'
+
     @classmethod
     def encode(cls, proc, args, kw):
-        return json.dumps({
-            'proc': proc,
-            'args': args,
-            'kw': kw,
-        })
+        message = {
+            'message': cls.name,
+            'content': {
+                'proc': proc,
+                'args': args,
+                'kw': kw,
+            },
+        }
+        return json.dumps(message)
 
     @classmethod
     def decode(cls, content):
-        content = json.loads(content)
+        message = json.loads(content)
         return (
-            content['proc'],
-            content['args'],
-            content['kw'],
+            message['content']['proc'],
+            message['content']['args'],
+            message['content']['kw'],
         )
+
+
+class Error(Message):
+    name = 'error'
+
+    @classmethod
+    def encode(cls, tb):
+        message = {
+            'message': cls.name,
+            'content': tb,
+        }
+        return json.dumps(message)
+
+    @classmethod
+    def decode(cls, content):
+        message = json.loads(content)
+        return message['content']
+
