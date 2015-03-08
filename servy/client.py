@@ -23,9 +23,8 @@ class Client(object):
     def __call__(self, *args, **kw):
         url = os.path.join(*(c or '' for c in (self.__url, self.__service)))
         message = proto.Request.encode(self.__proc, args, kw)
-        request = urllib2.Request(url, message)
         try:
-            response = urllib2.urlopen(request)
+            response = urllib2.urlopen(url, message)
         except urllib2.HTTPError as e:
             if e.code == 404:
                 raise exc.ServiceNotFound(self.__service)
