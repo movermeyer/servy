@@ -7,7 +7,7 @@ import servy.proto as proto
 import servy.exc as exc
 
 
-class Service(object):
+class Client(object):
     def __init__(self, service, url, proc=None):
         self.__service = service
         self.__url = url
@@ -18,7 +18,7 @@ class Service(object):
             proc = '{}.{}'.format(self.__proc, name)
         else:
             proc = name
-        return Service(self.__service, self.__url, proc)
+        return Client(self.__service, self.__url, proc)
 
     def __call__(self, *args, **kw):
         url = os.path.join(*(c or '' for c in (self.__url, self.__service)))
