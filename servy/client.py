@@ -4,7 +4,7 @@ import os
 import urllib2
 
 import servy.proto as proto
-
+import servy.exc as exc
 
 class Service(object):
     def __init__(self, service, url, proc=None):
@@ -26,13 +26,11 @@ class Service(object):
             request = urllib2.urlopen(url, payload)
         except urllib2.HTTPError as e:
             if e.code == 404:
-                raise NameError('service \'{}\' is not defined'.format(self.__service))
-            if e.code == 501:
-                raise AttributeError('\'{}\' service has no procedure \'{}\''.format(
-                    self.__service,
-                    self.__proc,
-                ))
+                raise exc.ServiceNotFound(self.__service)
+            elif e.code == 501:
+                raise exc.ProcedureNotFound(self.__proc)
             else:
                 raise
-        content = request.read()
-        return proto.Response.decode(content)
+        else:
+            content = request.read()
+            return proto.Response.decode(content)
