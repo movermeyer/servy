@@ -47,8 +47,8 @@ class Request(Message):
         )
 
 
-class Error(Message):
-    name = 'error'
+class Exception(Message):
+    name = 'exception'
 
     @classmethod
     def encode(cls, tb):

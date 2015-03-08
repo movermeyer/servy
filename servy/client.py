@@ -22,8 +22,8 @@ class Service(object):
 
     def __call__(self, *args, **kw):
         url = os.path.join(*(c or '' for c in (self.__url, self.__service)))
-        data = proto.Request.encode(self.__proc, args, kw)
-        request = urllib2.Request(url, data)
+        message = proto.Request.encode(self.__proc, args, kw)
+        request = urllib2.Request(url, message)
         try:
             response = urllib2.urlopen(request)
         except urllib2.HTTPError as e:
@@ -32,7 +32,8 @@ class Service(object):
             elif e.code == 501:
                 raise exc.ProcedureNotFound(self.__proc)
             elif e.code == 503:
-                tb = e.read()
+                message = e.read()
+                tb = proto.Exception.decode(message)
                 raise exc.RemoteException(tb)
             else:
                 raise
