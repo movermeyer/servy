@@ -16,3 +16,7 @@ class ProcedureNotFound(BaseException):
 
     def __str__(self):
         return str(self.procedure)
+
+
+class RemoteException(BaseException):
+    pass

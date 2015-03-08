@@ -1,5 +1,8 @@
 from __future__ import absolute_import
 
+import sys
+import traceback
+
 import webob.exc
 import webob.dec
 import webob.response
@@ -34,6 +37,11 @@ class Server(object):
                 raise webob.exc.HTTPNotImplemented
             service = getattr(service, attr)
 
-        content = service(*args, **kw)
+        try:
+            content = service(*args, **kw)
+        except Exception as e:
+            tb = ''.join(traceback.format_exception(*sys.exc_info()))
+            raise webob.exc.HTTPServiceUnavailable(body=tb)
+
         content = proto.Response.encode(content)
         return webob.response.Response(content)
