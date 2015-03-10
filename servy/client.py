@@ -55,7 +55,10 @@ class Client(object):
                 raise exc.ProcedureNotFound(self.__proc)
             elif e.code == 503:
                 message = e.read()
-                tb = proto.RemoteException.decode(message)
+                try:
+                    tb = proto.RemoteException.decode(message)
+                except (ValueError, TypeError):
+                    tb = ''
                 raise exc.RemoteException(tb)
             else:
                 raise

@@ -58,3 +58,9 @@ class RemoteExecution(unittest.TestCase):
             read.side_effect = urllib2.HTTPError(self.service.url, 503, 'Service Unavailable', [], fp)
             with self.assertRaises(servy.exc.RemoteException):
                 self.client.fn()
+
+    def test_http_exception_503_failed(self):
+        with mock.patch('servy.client.Service.read') as read:
+            read.side_effect = urllib2.HTTPError(self.service.url, 503, 'Service Unavailable', [], io.StringIO())
+            with self.assertRaises(servy.exc.RemoteException):
+                self.client.fn()
