@@ -26,4 +26,10 @@ class RemoteExecution(unittest.TestCase):
         content = servy.proto.Response.encode('content')
         with mock.patch('servy.client.Service.read') as read:
             read.return_value = content
-            self.assertEqual(self.client(), servy.proto.Response.decode(content))
+            self.assertEqual(self.client.fn(), servy.proto.Response.decode(content))
+        message = servy.proto.Request.encode('fn', (), {})
+        read.assert_called_once_with(message)
+
+    def test_failed_remote_execution(self):
+        with self.assertRaises(TypeError):
+            self.client()

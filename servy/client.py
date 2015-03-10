@@ -43,6 +43,8 @@ class Client(object):
         return Client(self.__service, proc)
 
     def __call__(self, *args, **kw):
+        if not self.__proc:
+            raise TypeError('\'proc\' argument must be a string, not \'NoneType\'')
         message = proto.Request.encode(self.__proc, args, kw)
         try:
             content = self.__service.read(message)
