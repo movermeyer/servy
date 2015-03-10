@@ -7,6 +7,16 @@ import servy.client
 import servy.proto
 
 
+class Service(unittest.TestCase):
+    def test_url(self):
+        service = servy.client.Service('serv', 'localhost')
+        self.assertEqual(service.url, 'http://localhost/serv')
+
+    def test_client_init(self):
+        client = servy.client.Client({'name': 'serv', 'host': 'localhost'})
+        self.assertEqual(client._Client__service.url, 'http://localhost/serv')
+
+
 class RemoteExecution(unittest.TestCase):
     def setUp(self):
         self.service = servy.client.Service('serv', 'localhost')
