@@ -1,9 +1,13 @@
 from __future__ import absolute_import
 
-import mock
+import io
 import unittest
+import urllib2
+
+import mock
 
 import servy.client
+import servy.exc
 import servy.proto
 
 
@@ -33,3 +37,15 @@ class RemoteExecution(unittest.TestCase):
     def test_failed_remote_execution(self):
         with self.assertRaises(TypeError):
             self.client()
+
+    def test_http_exception_404(self):
+        with mock.patch('servy.client.Service.read') as read:
+            read.side_effect = urllib2.HTTPError(self.service.url, 404, 'Not Found', [], io.StringIO())
+            with self.assertRaises(servy.exc.ServiceNotFound):
+                self.client.fn()
+
+    def test_http_exception_501(self):
+        with mock.patch('servy.client.Service.read') as read:
+            read.side_effect = urllib2.HTTPError(self.service.url, 501, 'Not Implemented', [], io.StringIO())
+            with self.assertRaises(servy.exc.ProcedureNotFound):
+                self.client.fn()
