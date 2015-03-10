@@ -24,6 +24,9 @@ class Service(object):
         }
         return urlparse.urlunparse(urlparse.ParseResult(**{k: v or '' for k, v in url.iteritems()}))
 
+    def read(self, message):
+        return urllib2.urlopen(self.url, message).read()
+
 
 class Client(object):
     def __init__(self, service, proc=None):
@@ -42,7 +45,7 @@ class Client(object):
     def __call__(self, *args, **kw):
         message = proto.Request.encode(self.__proc, args, kw)
         try:
-            content = urllib2.urlopen(self.__service.url, message).read()
+            content = self.__service.read(message)
         except urllib2.HTTPError as e:
             if e.code == 404:
                 raise exc.ServiceNotFound(self.__service.name)
