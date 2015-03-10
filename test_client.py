@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import servy.client
 
-echo = servy.client.Client('echo', 'http://localhost:8000/')
+echo = servy.client.Client({'name': 'echo', 'host': 'localhost:8000'})
 
 
 def main():

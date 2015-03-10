@@ -1,16 +1,35 @@
 from __future__ import absolute_import
 
-import os
 import urllib2
+import urlparse
 
 import servy.proto as proto
 import servy.exc as exc
 
 
+class Service(object):
+    def __init__(self, name, host):
+        self.name = name
+        self.host = host
+
+    @property
+    def url(self):
+        url = {
+            'scheme': 'http',
+            'netloc': self.host,
+            'path': self.name,
+            'params': '',
+            'query': '',
+            'fragment': '',
+        }
+        return urlparse.urlunparse(urlparse.ParseResult(**{k: v or '' for k, v in url.iteritems()}))
+
+
 class Client(object):
-    def __init__(self, service, url, proc=None):
+    def __init__(self, service, proc=None):
+        if isinstance(service, dict):
+            service = Service(**service)
         self.__service = service
-        self.__url = url
         self.__proc = proc
 
     def __getattr__(self, name):
@@ -18,16 +37,15 @@ class Client(object):
             proc = '{}.{}'.format(self.__proc, name)
         else:
             proc = name
-        return Client(self.__service, self.__url, proc)
+        return Client(self.__service, proc)
 
     def __call__(self, *args, **kw):
-        url = os.path.join(*(c or '' for c in (self.__url, self.__service)))
         message = proto.Request.encode(self.__proc, args, kw)
         try:
-            response = urllib2.urlopen(url, message)
+            content = urllib2.urlopen(self.__service.url, message).read()
         except urllib2.HTTPError as e:
             if e.code == 404:
-                raise exc.ServiceNotFound(self.__service)
+                raise exc.ServiceNotFound(self.__service.name)
             elif e.code == 501:
                 raise exc.ProcedureNotFound(self.__proc)
             elif e.code == 503:
@@ -37,5 +55,4 @@ class Client(object):
             else:
                 raise
 
-        content = response.read()
         return proto.Response.decode(content)
