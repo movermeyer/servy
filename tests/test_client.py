@@ -49,3 +49,12 @@ class RemoteExecution(unittest.TestCase):
             read.side_effect = urllib2.HTTPError(self.service.url, 501, 'Not Implemented', [], io.StringIO())
             with self.assertRaises(servy.exc.ProcedureNotFound):
                 self.client.fn()
+
+    def test_http_exception_503(self):
+        with mock.patch('servy.client.Service.read') as read:
+            fp = io.StringIO()
+            fp.write(unicode(servy.proto.RemoteException.encode('traceback')))
+            fp.seek(0)
+            read.side_effect = urllib2.HTTPError(self.service.url, 503, 'Service Unavailable', [], fp)
+            with self.assertRaises(servy.exc.RemoteException):
+                self.client.fn()
