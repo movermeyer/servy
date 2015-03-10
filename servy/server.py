@@ -41,7 +41,7 @@ class Server(object):
             content = service(*args, **kw)
         except Exception:
             tb = ''.join(traceback.format_exception(*sys.exc_info()))
-            message = proto.Exception.encode(tb)
+            message = proto.RemoteException.encode(tb)
             raise webob.exc.HTTPServiceUnavailable(body=message)
 
         content = proto.Response.encode(content)

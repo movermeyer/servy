@@ -47,7 +47,7 @@ class Request(Message):
         )
 
 
-class Exception(Message):
+class RemoteException(Message):
     name = 'exception'
 
     @classmethod

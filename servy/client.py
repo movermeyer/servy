@@ -32,7 +32,7 @@ class Client(object):
                 raise exc.ProcedureNotFound(self.__proc)
             elif e.code == 503:
                 message = e.read()
-                tb = proto.Exception.decode(message)
+                tb = proto.RemoteException.decode(message)
                 raise exc.RemoteException(tb)
             else:
                 raise
