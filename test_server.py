@@ -4,6 +4,7 @@ import wsgiref.simple_server
 
 import servy.server
 
+
 class Parser(object):
     @classmethod
     def parse_details(cls, data):

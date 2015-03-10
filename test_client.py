@@ -4,6 +4,7 @@ import servy.client
 
 echo = servy.client.Client('echo', 'http://localhost:8000/')
 
+
 def main():
     # print echo.pars('11')
     return echo.parser.parse_details({'details': 'anything1'})

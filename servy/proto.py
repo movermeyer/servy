@@ -62,4 +62,3 @@ class Exception(Message):
     def decode(cls, content):
         message = json.loads(content)
         return message['content']
-
