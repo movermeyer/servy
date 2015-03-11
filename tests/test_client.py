@@ -20,6 +20,18 @@ class Service(unittest.TestCase):
         client = servy.client.Client({'name': 'serv', 'host': 'localhost'})
         self.assertEqual(client._Client__service.url, 'http://localhost/serv')
 
+    def test_client_host_with_port(self):
+        client = servy.client.Client({'name': 'serv', 'host': 'localhost:80'})
+        self.assertEqual(client._Client__service.url, 'http://localhost:80/serv')
+
+    def test_client_with_https_scheme(self):
+        client = servy.client.Client({'name': 'serv', 'host': 'localhost:80', 'scheme': 'https'})
+        self.assertEqual(client._Client__service.url, 'https://localhost:80/serv')
+
+    def test_client_unicode_values(self):
+        client = servy.client.Client({'name': u'serv', 'host': u'localhost:80', 'scheme': u'https'})
+        self.assertEqual(client._Client__service.url, 'https://localhost:80/serv')
+
 
 class RemoteExecution(unittest.TestCase):
     def setUp(self):

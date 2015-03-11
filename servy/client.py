@@ -8,14 +8,16 @@ import servy.exc as exc
 
 
 class Service(object):
-    def __init__(self, name, host):
+    def __init__(self, name, host, scheme='http'):
         self.name = name
+
         self.host = host
+        self.scheme = scheme
 
     @property
     def url(self):
         url = {
-            'scheme': 'http',
+            'scheme': self.scheme,
             'netloc': self.host,
             'path': self.name,
             'params': '',
