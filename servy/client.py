@@ -53,7 +53,7 @@ class Client(object):
         except urllib2.HTTPError as e:
             if e.code == 404:
                 raise exc.ServiceNotFound(self.__service.name)
-            elif e.code == 501:
+            elif e.code in (501, 422):
                 raise exc.ProcedureNotFound(self.__proc)
             elif e.code == 503:
                 message = e.read()
