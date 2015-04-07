@@ -5,17 +5,18 @@ import wsgiref.simple_server
 import servy.server
 
 
-class Parser(object):
+class Parser(servy.server.Service):
     @classmethod
     def parse_details(cls, data):
         return data.get('details')
 
 
-class Echo(object):
+class Echo(servy.server.Service):
 
     parser = Parser()
 
     shit = 1
+    pu = ''
 
     @classmethod
     def echo(cls, data):
