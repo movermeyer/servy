@@ -15,8 +15,7 @@ class Server(object):
         self.services = services
 
         if server:
-            procedures = {n: p for n, p in server.__dict__.items() if callable(p)}
-            self.services.update(procedures)
+            self.services.update(server.__dict__)
 
     @webob.dec.wsgify
     def __call__(self, request):
@@ -40,8 +39,9 @@ class Server(object):
             if not hasattr(service, attr):
                 raise webob.exc.HTTPNotImplemented
             service = getattr(service, attr)
-            if not callable(service):
-                raise webob.exc.HTTPUnprocessableEntity
+
+        if not callable(service):
+            raise webob.exc.HTTPUnprocessableEntity
 
         try:
             content = service(*args, **kw)
