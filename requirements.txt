@@ -8,3 +8,7 @@ flake8==2.3.0
 mccabe==0.3
 pep8==1.6.1
 pyflakes==0.8.1
+
+sphinx==1.2.3
+sphinx-pypi-upload==0.2.1
+sphinx_rtd_theme==0.1.7
