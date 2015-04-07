@@ -11,8 +11,12 @@ import servy.proto as proto
 
 
 class Server(object):
-    def __init__(self, **services):
+    def __init__(self, server=None, **services):
         self.services = services
+
+        if server:
+            procedures = {n: p for n, p in server.__dict__.items() if callable(p)}
+            self.services.update(procedures)
 
     @webob.dec.wsgify
     def __call__(self, request):
@@ -36,6 +40,8 @@ class Server(object):
             if not hasattr(service, attr):
                 raise webob.exc.HTTPNotImplemented
             service = getattr(service, attr)
+            if not callable(service):
+                raise webob.exc.HTTPUnprocessableEntity
 
         try:
             content = service(*args, **kw)
