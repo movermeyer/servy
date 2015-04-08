@@ -13,12 +13,28 @@ class Dummy(object):
     def fn(self):
         pass
 
+
 class Map(object):
     m = {'fn': lambda x:x}
+
 
 class Service(servy.server.Service):
     def __call__(self):
         pass
+
+srv = Service()
+
+class Inception(object):
+    service = srv
+
+    class A1(servy.server.Service):
+        class A2(servy.server.Service):
+            class A3(servy.server.Service):
+                class A4(servy.server.Service):
+                    class A5(servy.server.Service):
+                        @classmethod
+                        def fn(cls):
+                            pass
 
 
 class ServiceDetection(unittest.TestCase):
@@ -111,4 +127,27 @@ class Analyze(unittest.TestCase):
         containers, services = servy.server.ServiceInspector.analyze(container)
         self.assertEqual(containers, {})
         self.assertEqual(services, {'fn': container['fn']})
+
+
+class ServiceFinder(unittest.TestCase):
+    def test_dummy(self):
+        services = servy.server.ServiceInspector.find(Dummy)
+        self.assertEqual(services, {'fn': Dummy.fn})
+
+    def test_dummy_instance(self):
+        dummy = Dummy()
+        services = servy.server.ServiceInspector.find(dummy)
+        self.assertEqual(services, {'fn': dummy.fn})
+
+    def test_empty(self):
+        services = servy.server.ServiceInspector.find(Empty)
+        self.assertEqual(services, {})
+
+    def test_map(self):
+        services = servy.server.ServiceInspector.find(Map)
+        self.assertEqual(services, {'m.fn': Map.m['fn']})
+
+    def test_service(self):
+        services = servy.server.ServiceInspector.find(Inception)
+        self.assertEqual(services, {'service': srv})
 
