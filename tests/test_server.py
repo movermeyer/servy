@@ -15,24 +15,38 @@ class Service(servy.server.Service):
         pass
 
 
-class ServiceInspector(unittest.TestCase):
-    def test_is_service(self):
+class ServiceInspectorServiceDetection(unittest.TestCase):
+    def test_lambda(self):
         self.assertTrue(servy.server.ServiceInspector.is_service(lambda x: x))
 
-    def test_is_service_for_method(self):
+    def test_method(self):
         self.assertTrue(servy.server.ServiceInspector.is_service(Dummy().fn))
 
-    def test_is_service_for_callable_class_service(self):
+    def test_callable_class_service(self):
         self.assertTrue(servy.server.ServiceInspector.is_service(Service()))
 
-    def test_is_service_for_type(self):
+    def test_type(self):
         self.assertFalse(servy.server.ServiceInspector.is_service(dict))
 
-    def test_is_service_for_int(self):
+    def test_int(self):
         self.assertFalse(servy.server.ServiceInspector.is_service(1))
 
-    def test_is_service_for_string(self):
+    def test_string(self):
         self.assertFalse(servy.server.ServiceInspector.is_service("1"))
 
-    def test_is_service_for_dummy_class(self):
+    def test_dummy_class(self):
         self.assertFalse(servy.server.ServiceInspector.is_service(Dummy))
+
+
+class ServiceInspectorContainerDetection(unittest.TestCase):
+    def test_dict(self):
+        self.assertTrue(servy.server.ServiceInspector.is_container({}))
+
+    def test_service_class(self):
+        self.assertTrue(servy.server.ServiceInspector.is_container(Service))
+
+    def test_service_class_instance(self):
+        self.assertTrue(servy.server.ServiceInspector.is_container(Service()))
+
+    def test_dummy_class(self):
+        self.assertFalse(servy.server.ServiceInspector.is_container(Dummy))
