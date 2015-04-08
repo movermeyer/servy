@@ -13,37 +13,33 @@ import servy.proto
 
 class Service(unittest.TestCase):
     def test_url(self):
-        service = servy.client.Service('serv', 'localhost')
+        service = servy.client.Service('localhost', 'serv')
         self.assertEqual(service.url, 'http://localhost/serv')
 
     def test_client_init(self):
-        client = servy.client.Client({'name': 'serv', 'host': 'localhost'})
+        client = servy.client.Client('localhost', 'serv')
         self.assertEqual(client._Client__service.url, 'http://localhost/serv')
 
     def test_client_host_with_port(self):
-        client = servy.client.Client({'name': 'serv', 'host': 'localhost:80'})
+        client = servy.client.Client('localhost:80', 'serv')
         self.assertEqual(client._Client__service.url, 'http://localhost:80/serv')
 
-    def test_client_with_https_scheme(self):
-        client = servy.client.Client({'name': 'serv', 'host': 'localhost:80', 'scheme': 'https'})
-        self.assertEqual(client._Client__service.url, 'https://localhost:80/serv')
-
     def test_client_unicode_values(self):
-        client = servy.client.Client({'name': u'serv', 'host': u'localhost:80', 'scheme': u'https'})
-        self.assertEqual(client._Client__service.url, 'https://localhost:80/serv')
+        client = servy.client.Client(u'localhost:80', u'serv')
+        self.assertEqual(client._Client__service.url, 'http://localhost:80/serv')
 
 
 class RemoteExecution(unittest.TestCase):
     def setUp(self):
-        self.service = servy.client.Service('serv', 'localhost')
-        self.client = servy.client.Client(self.service)
+        self.service = servy.client.Service('localhost', 'serv')
+        self.client = servy.client.Client('localhost', self.service)
 
     def test_remote_execution(self):
         content = servy.proto.Response.encode('content')
         with mock.patch('servy.client.Service.read') as read:
             read.return_value = content
             self.assertEqual(self.client.fn(), servy.proto.Response.decode(content))
-        message = servy.proto.Request.encode('fn', (), {})
+        message = servy.proto.Request.encode((), {})
         read.assert_called_once_with(message)
 
     def test_failed_remote_execution(self):
@@ -54,12 +50,6 @@ class RemoteExecution(unittest.TestCase):
         with mock.patch('servy.client.Service.read') as read:
             read.side_effect = urllib2.HTTPError(self.service.url, 404, 'Not Found', [], io.StringIO())
             with self.assertRaises(servy.exc.ServiceNotFound):
-                self.client.fn()
-
-    def test_http_exception_501(self):
-        with mock.patch('servy.client.Service.read') as read:
-            read.side_effect = urllib2.HTTPError(self.service.url, 501, 'Not Implemented', [], io.StringIO())
-            with self.assertRaises(servy.exc.ProcedureNotFound):
                 self.client.fn()
 
     def test_http_exception_503(self):
