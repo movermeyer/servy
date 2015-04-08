@@ -94,17 +94,9 @@ class Server(object):
         service = self.services[service]
 
         try:
-            procedure, args, kw = proto.Request.decode(request.body)
+            args, kw = proto.Request.decode(request.body)
         except:
             raise webob.exc.HTTPBadRequest
-
-        for attr in procedure.split('.'):
-            if not hasattr(service, attr):
-                raise webob.exc.HTTPNotImplemented
-            service = getattr(service, attr)
-
-        if not callable(service):
-            raise webob.exc.HTTPUnprocessableEntity
 
         try:
             content = service(*args, **kw)

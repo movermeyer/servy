@@ -6,4 +6,6 @@ Changelog
 0.2.1
 +++++
 
--  Add class-based ``Server`` definition
+- Class-based ``Server`` definition
+- Service inspector
+- Removed proc from request protocol

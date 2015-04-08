@@ -26,11 +26,10 @@ class Request(Message):
     name = 'request'
 
     @classmethod
-    def encode(cls, proc, args, kw):
+    def encode(cls, args, kw):
         message = {
             'message': cls.name,
             'content': {
-                'proc': proc,
                 'args': args,
                 'kw': kw,
             },
@@ -41,7 +40,6 @@ class Request(Message):
     def decode(cls, content):
         message = json.loads(content)
         return (
-            message['content']['proc'],
             message['content']['args'],
             message['content']['kw'],
         )

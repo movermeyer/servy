@@ -8,16 +8,14 @@ import servy.exc as exc
 
 
 class Service(object):
-    def __init__(self, name, host, scheme='http'):
-        self.name = name
-
+    def __init__(self, host, name):
         self.host = host
-        self.scheme = scheme
+        self.name = name
 
     @property
     def url(self):
         url = {
-            'scheme': self.scheme,
+            'scheme': 'http',
             'netloc': self.host,
             'path': self.name,
             'params': '',
@@ -31,30 +29,28 @@ class Service(object):
 
 
 class Client(object):
-    def __init__(self, service, proc=None):
-        if isinstance(service, dict):
-            service = Service(**service)
+    def __init__(self, host, service=None):
+        self.host = host
+        if service:
+            service = Service(host, service)
         self.__service = service
-        self.__proc = proc
 
     def __getattr__(self, name):
-        if self.__proc:
-            proc = '{}.{}'.format(self.__proc, name)
+        if self.__service:
+            service = '{}.{}'.format(self.__service.name, name)
         else:
-            proc = name
-        return Client(self.__service, proc)
+            service = name
+        return Client(self.host, service)
 
     def __call__(self, *args, **kw):
-        if not self.__proc:
-            raise TypeError('\'proc\' argument must be a string, not \'NoneType\'')
-        message = proto.Request.encode(self.__proc, args, kw)
+        if not self.__service:
+            raise TypeError('\'service\' argument must be a string, not \'NoneType\'')
+        message = proto.Request.encode(args, kw)
         try:
             content = self.__service.read(message)
         except urllib2.HTTPError as e:
             if e.code == 404:
                 raise exc.ServiceNotFound(self.__service.name)
-            elif e.code in (501, 422):
-                raise exc.ProcedureNotFound(self.__proc)
             elif e.code == 503:
                 message = e.read()
                 try:

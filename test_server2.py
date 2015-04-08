@@ -28,6 +28,10 @@ class RiverRPC(object):
     echo = Echo
     shit = 1
 
+    @classmethod
+    def a(cls, pu):
+        return 1
+
 
 def main():
     httpd = wsgiref.simple_server.make_server('', 8000, RiverRPC)
