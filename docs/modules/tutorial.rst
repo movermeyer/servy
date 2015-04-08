@@ -26,3 +26,13 @@ Server could be defined in more declarative way::
 
 All ``RPCServer`` callable attributes will be provided as services.
 
+Simple Service
+--------------
+
+::
+
+   @servy.server.Server
+   class EchoServer(object):
+       @classmethod
+       def echo(cls, message):
+           return message
