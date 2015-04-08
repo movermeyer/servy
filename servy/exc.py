@@ -10,13 +10,5 @@ class ServiceNotFound(BaseException):
         return str(self.service)
 
 
-class ProcedureNotFound(BaseException):
-    def __init__(self, procedure):
-        self.procedure = procedure
-
-    def __str__(self):
-        return str(self.procedure)
-
-
 class RemoteException(BaseException):
     pass
