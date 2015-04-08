@@ -73,9 +73,9 @@ class Service(object):
 
 
 class Server(object):
-    def __init__(self, server=None, **services):
-        if server:
-            self.services = ServiceInspector.find(server)
+    def __init__(self, _server=None, **services):
+        if _server:
+            self.services = ServiceInspector.find(_server)
         else:
             self.services = {}
         self.services.update(services)
@@ -100,7 +100,7 @@ class Server(object):
 
         try:
             content = service(*args, **kw)
-        except Exception:
+        except:
             tb = ''.join(traceback.format_exception(*sys.exc_info()))
             message = proto.RemoteException.encode(tb)
             raise webob.exc.HTTPServiceUnavailable(body=message)
