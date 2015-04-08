@@ -6,7 +6,7 @@ Release v\ |version|.
 Introduction
 ------------
 
-Servy is a module RPC tool for Python based on RESTful architecture.
+Servy is a RPC tool based on RESTful architecture.
 
 
 .. toctree::
