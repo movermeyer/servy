@@ -5,10 +5,16 @@ import unittest
 import servy.server
 
 
+class Empty(object):
+    pass
+
+
 class Dummy(object):
     def fn(self):
         pass
 
+class Map(object):
+    m = {'fn': lambda x:x}
 
 class Service(servy.server.Service):
     def __call__(self):
@@ -70,3 +76,39 @@ class PublicMethodsDetection(unittest.TestCase):
             servy.server.ServiceInspector.get_public(items.items()),
             {},
         )
+
+
+class Analyze(unittest.TestCase):
+    def test_dummy_object(self):
+        containers, services = servy.server.ServiceInspector.analyze(Dummy)
+        self.assertEqual(containers, {})
+        self.assertEqual(services, {'fn': Dummy.fn})
+
+    def test_dummy_instance_object(self):
+        dummy = Dummy()
+        containers, services = servy.server.ServiceInspector.analyze(dummy)
+        self.assertEqual(containers, {})
+        self.assertEqual(services, {'fn': dummy.fn})
+
+    def test_empty_object(self):
+        containers, services = servy.server.ServiceInspector.analyze(Empty)
+        self.assertEqual(containers, {})
+        self.assertEqual(services, {})
+
+    def test_map(self):
+        containers, services = servy.server.ServiceInspector.analyze(Map)
+        self.assertEqual(containers, {'m': Map.m})
+        self.assertEqual(services, {})
+
+    def test_map_instance(self):
+        m = Map()
+        containers, services = servy.server.ServiceInspector.analyze(m)
+        self.assertEqual(containers, {'m': m.m})
+        self.assertEqual(services, {})
+
+    def test_dict(self):
+        container = {'fn': lambda x: x}
+        containers, services = servy.server.ServiceInspector.analyze(container)
+        self.assertEqual(containers, {})
+        self.assertEqual(services, {'fn': container['fn']})
+
