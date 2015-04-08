@@ -50,3 +50,14 @@ class ServiceInspectorContainerDetection(unittest.TestCase):
 
     def test_dummy_class(self):
         self.assertFalse(servy.server.ServiceInspector.is_container(Dummy))
+
+
+class ServiceInspectorPublicMethods(unittest.TestCase):
+    def test_double_underscores(self):
+        items = {
+            '__private': None,
+        }
+        self.assertEqual(
+            servy.server.ServiceInspector.get_public(items),
+            {},
+        )
