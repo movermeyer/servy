@@ -58,6 +58,15 @@ class ServiceInspectorPublicMethods(unittest.TestCase):
             '__private': None,
         }
         self.assertEqual(
-            servy.server.ServiceInspector.get_public(items),
+            servy.server.ServiceInspector.get_public(items.items()),
+            {},
+        )
+
+    def test_single_underscores(self):
+        items = {
+            '_private': None,
+        }
+        self.assertEqual(
+            servy.server.ServiceInspector.get_public(items.items()),
             {},
         )
