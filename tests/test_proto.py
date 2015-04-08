@@ -29,7 +29,6 @@ class RequestProto(unittest.TestCase):
         self.message = json.dumps({
             'message': 'request',
             'content': {
-                'proc': 'proc',
                 'args': (),
                 'kw': {},
             },
@@ -39,13 +38,13 @@ class RequestProto(unittest.TestCase):
         self.assertTrue(issubclass(servy.proto.Request, servy.proto.Message))
 
     def test_encode(self):
-        content = servy.proto.Request.encode('proc', (), {})
+        content = servy.proto.Request.encode((), {})
         self.assertEqual(content, self.message)
 
     def test_decode(self):
         self.assertEqual(
             servy.proto.Request.decode(self.message),
-            ('proc', [], {}),
+            ([], {}),
         )
 
 
