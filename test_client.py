@@ -5,6 +5,7 @@ import servy.client
 
 scraper = servy.client.Client('localhost:8000')
 
+
 def main():
     print scraper.echo.echo('11')
     # echo.shit()
