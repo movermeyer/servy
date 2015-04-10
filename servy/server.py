@@ -38,33 +38,33 @@ class Inspector(object):
     @classmethod
     def analyze(cls, obj):
         if isinstance(obj, dict):
-            services = {k: v for k, v in obj.items() if cls.is_procedure(v)}.items()
+            procedures = {k: v for k, v in obj.items() if cls.is_procedure(v)}.items()
             containers = {k: v for k, v in obj.items() if cls.is_container(v)}.items()
         else:
-            services = inspect.getmembers(obj, cls.is_procedure)
+            procedures = inspect.getmembers(obj, cls.is_procedure)
             containers = inspect.getmembers(obj, cls.is_container)
 
-        services = cls.get_public(services)
+        procedures = cls.get_public(procedures)
         containers = cls.get_public(containers)
-        return containers, services
+        return containers, procedures
 
     @classmethod
     def find(cls, container):
-        containers_tree, services_tree = cls.analyze(container)
+        containers_tree, procedures_tree = cls.analyze(container)
         while containers_tree:
             for namespace in containers_tree.copy():
                 container = containers_tree.pop(namespace)
                 if namespace.count('.') > 3:
                     continue
-                containers, services = cls.analyze(container)
-                for service in services:
-                    services_tree['{}.{}'.format(namespace, service)] = \
-                        services[service]
+                containers, procedures = cls.analyze(container)
+                for procedure in procedures:
+                    procedures_tree['{}.{}'.format(namespace, procedure)] = \
+                        procedures[procedure]
                 for container in containers:
                     containers_tree['{}.{}'.format(namespace, container)] = \
                         containers[container]
 
-        return services_tree
+        return procedures_tree
 
 
 class Container(object):
@@ -72,12 +72,12 @@ class Container(object):
 
 
 class Server(object):
-    def __init__(self, _server=None, **services):
+    def __init__(self, _server=None, **procedures):
         if _server:
-            self.services = Inspector.find(_server)
+            self.procedures = Inspector.find(_server)
         else:
-            self.services = {}
-        self.services.update(services)
+            self.procedures = {}
+        self.procedures.update(procedures)
 
     @webob.dec.wsgify
     def __call__(self, request):
@@ -86,11 +86,11 @@ class Server(object):
         raise webob.exc.HTTPMethodNotAllowed
 
     def rpc(self, request):
-        service = request.path[1:]
-        if service not in self.services:
+        procedure = request.path[1:]
+        if procedure not in self.procedures:
             raise webob.exc.HTTPNotFound
 
-        service = self.services[service]
+        procedure = self.procedures[procedure]
 
         try:
             args, kw = proto.Request.decode(request.body)
@@ -98,7 +98,7 @@ class Server(object):
             raise webob.exc.HTTPBadRequest
 
         try:
-            content = service(*args, **kw)
+            content = procedure(*args, **kw)
         except:
             tb = ''.join(traceback.format_exception(*sys.exc_info()))
             message = proto.RemoteException.encode(tb)
