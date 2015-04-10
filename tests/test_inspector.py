@@ -46,7 +46,7 @@ class ServiceDetection(unittest.TestCase):
         self.assertTrue(servy.server.Inspector.is_service(Dummy().fn))
 
     def test_callable_class_service(self):
-        self.assertTrue(servy.server.Inspector.is_service(Service()))
+        self.assertFalse(servy.server.Inspector.is_service(Service()))
 
     def test_type(self):
         self.assertFalse(servy.server.Inspector.is_service(dict))
@@ -150,4 +150,4 @@ class ServiceFinder(unittest.TestCase):
 
     def test_service(self):
         services = servy.server.Inspector.find(Inception)
-        self.assertEqual(services, {'service': srv})
+        self.assertEqual(services, {})

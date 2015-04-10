@@ -17,8 +17,7 @@ class Inspector(object):
     def is_service(obj):
         return (
             inspect.ismethod(obj) or
-            inspect.isfunction(obj) or
-            (isinstance(obj, Service) and callable(obj))
+            inspect.isfunction(obj)
         )
 
     @staticmethod
