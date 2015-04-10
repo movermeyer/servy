@@ -77,7 +77,7 @@ class Server(object):
             self.procedures = Inspector.find(_container)
         else:
             self.procedures = {}
-            for name, proc in procedures:
+            for name, proc in procedures.items():
                 if not Inspector.is_procedure(proc):
                     continue
                 self.procedures[name] = proc
