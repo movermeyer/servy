@@ -24,9 +24,9 @@ class Service(servy.server.Service):
 
 srv = Service()
 
+
 class Inception(object):
     service = srv
-
 
     class A1(servy.server.Service):
         class A2(servy.server.Service):
