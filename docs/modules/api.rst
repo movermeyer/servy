@@ -7,5 +7,5 @@ Client
 .. autoclass:: servy.client.Client
    :members:
 
-.. autoclass:: servy.client.Service
+.. autoclass:: servy.server.Server
    :members:
