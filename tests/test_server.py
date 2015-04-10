@@ -2,7 +2,11 @@ from __future__ import absolute_import
 
 import unittest
 
+import webob
+import webob.exc
+
 import servy.server
+import servy.proto as proto
 
 
 def fn():
@@ -56,3 +60,63 @@ class ServerInitiation(unittest.TestCase):
         self.assertEqual(Server.procedures, {
             'c.fn': Complex.fn,
         })
+
+
+@servy.server.Server
+class RPC(object):
+    NAME = 'rpc'
+
+    @classmethod
+    def proc(cls):
+        return 'rpc'
+
+    @classmethod
+    def proc_ext(cls, prefix, suffix=None):
+        suffix = suffix or ''
+        return '{}_{}'.format(prefix, suffix)
+
+
+class ProcedureCall(unittest.TestCase):
+    def test_docs(self):
+        request = webob.Request.blank('/')
+        request.method = 'GET'
+
+        response = RPC(request)
+        self.assertEqual(response, 'proc\n    None\n\nproc_ext\n    None\n\n')
+
+    def test_method_not_allowed(self):
+        request = webob.Request.blank('/proc')
+        request.method = 'PUT'
+
+        with self.assertRaises(webob.exc.HTTPMethodNotAllowed):
+            RPC(request)
+
+    def test_proc_not_found(self):
+        request = webob.Request.blank('/not_found')
+        request.method = 'POST'
+
+        with self.assertRaises(webob.exc.HTTPNotFound):
+            RPC(request)
+
+    def test_no_body(self):
+        request = webob.Request.blank('/proc')
+        request.method = 'POST'
+
+        with self.assertRaises(webob.exc.HTTPBadRequest):
+            RPC(request)
+
+    def test_call_without_args(self):
+        request = webob.Request.blank('/proc')
+        request.method = 'POST'
+        request.body = proto.Request.encode((), {})
+
+        response = proto.Response.decode(RPC(request))
+        self.assertEqual(response, 'rpc')
+
+    def test_call_with_args(self):
+        request = webob.Request.blank('/proc_ext')
+        request.method = 'POST'
+        request.body = proto.Request.encode(('O'), {'suffix': 'O'})
+
+        response = proto.Response.decode(RPC(request))
+        self.assertEqual(response, 'O_O')
