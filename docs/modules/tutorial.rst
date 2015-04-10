@@ -1,28 +1,28 @@
 Tutorial
 ========
 
-Functional Server Definition
-----------------------------
+Explicit Server Definition
+--------------------------
 
 The most simple way to define services is::
 
+   def echo():
+       pass
+
    server = servy.server.Server(
-       echo=Echo
+       echo=echo
    )
 
-.. note::
 
-   There is no introspection for ``Echo`` server, thus ``Echo`` class should be callable.
-   To see more flexible way to define service take a look on Class-based Server Definition.
-
-Class-based Server Definition
------------------------------
+Implicit Server Definition
+--------------------------
 
 Server could be defined in more declarative way::
 
    @servy.server.Server
    class RPCServer(object):
-       echo = Echo
+       def echo(self):
+           pass
 
 All ``RPCServer`` callable attributes will be provided as services.
 
@@ -31,8 +31,16 @@ Simple Service
 
 ::
 
+   class Logger(servy.server.Container):
+       def __init__(self):
+           self.logger = LoggerClass()
+       def debug(self, message):
+           self.logger.debug(message)
+
    @servy.server.Server
-   class EchoServer(object):
+   class EchoServer(servy.server.Container):
+       logger = Logger()
+
        @classmethod
        def echo(cls, message):
            return message
