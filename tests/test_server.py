@@ -47,3 +47,12 @@ class ServerInitiation(unittest.TestCase):
             simple = Simple
 
         self.assertEqual(Server.procedures, {})
+
+    def test_decorator_complex(self):
+        @servy.server.Server
+        class Server(object):
+            c = Complex
+
+        self.assertEqual(Server.procedures, {
+            'c.fn': Complex.fn,
+        })
