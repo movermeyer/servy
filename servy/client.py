@@ -7,7 +7,7 @@ import servy.proto as proto
 import servy.exc as exc
 
 
-class Service(object):
+class Request(object):
     def __init__(self, host, name):
         self.host = host
         self.name = name
@@ -32,7 +32,7 @@ class Client(object):
     def __init__(self, host, service=None):
         self.host = host
         if service:
-            service = Service(host, service)
+            service = Request(host, service)
         self.__service = service
 
     def __getattr__(self, name):
