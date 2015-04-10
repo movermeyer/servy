@@ -1,3 +1,5 @@
+.. _basics:
+
 Basics
 ======
 
@@ -13,7 +15,12 @@ There is 2 ways to initialize :class:`servy.server.Server`:
 #. Explicit - passing procedures by name
 #. Implicit - decorating container
 
-Server is based on two concepts:
+.. note::
+
+   Check :ref:`tutorial <tutorial>` for details.
+
+Server essentials
+^^^^^^^^^^^^^^^^^
 
 Container
 
