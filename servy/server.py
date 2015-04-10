@@ -72,9 +72,9 @@ class Container(object):
 
 
 class Server(object):
-    def __init__(self, _server=None, **procedures):
-        if _server:
-            self.procedures = Inspector.find(_server)
+    def __init__(self, _container=None, **procedures):
+        if _container:
+            self.procedures = Inspector.find(_container)
         else:
             self.procedures = {}
         self.procedures.update(procedures)
