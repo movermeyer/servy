@@ -18,7 +18,7 @@ class Map(object):
     m = {'fn': lambda x: x}
 
 
-class Service(servy.server.Service):
+class Service(servy.server.Container):
     def __call__(self):
         pass
 
@@ -28,11 +28,11 @@ srv = Service()
 class Inception(object):
     service = srv
 
-    class A1(servy.server.Service):
-        class A2(servy.server.Service):
-            class A3(servy.server.Service):
-                class A4(servy.server.Service):
-                    class A5(servy.server.Service):
+    class A1(servy.server.Container):
+        class A2(servy.server.Container):
+            class A3(servy.server.Container):
+                class A4(servy.server.Container):
+                    class A5(servy.server.Container):
                         @classmethod
                         def fn(cls):
                             pass

@@ -24,8 +24,8 @@ class Inspector(object):
     def is_container(obj):
         return (
             isinstance(obj, dict) or
-            (inspect.isclass(obj) and issubclass(obj, Service)) or
-            isinstance(obj, Service)
+            (inspect.isclass(obj) and issubclass(obj, Container)) or
+            isinstance(obj, Container)
         )
 
     @staticmethod
@@ -67,7 +67,7 @@ class Inspector(object):
         return services_tree
 
 
-class Service(object):
+class Container(object):
     pass
 
 
