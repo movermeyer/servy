@@ -14,7 +14,7 @@ import servy.proto as proto
 class Inspector(object):
 
     @staticmethod
-    def is_service(obj):
+    def is_procedure(obj):
         return (
             inspect.ismethod(obj) or
             inspect.isfunction(obj)
@@ -38,10 +38,10 @@ class Inspector(object):
     @classmethod
     def analyze(cls, obj):
         if isinstance(obj, dict):
-            services = {k: v for k, v in obj.items() if cls.is_service(v)}.items()
+            services = {k: v for k, v in obj.items() if cls.is_procedure(v)}.items()
             containers = {k: v for k, v in obj.items() if cls.is_container(v)}.items()
         else:
-            services = inspect.getmembers(obj, cls.is_service)
+            services = inspect.getmembers(obj, cls.is_procedure)
             containers = inspect.getmembers(obj, cls.is_container)
 
         services = cls.get_public(services)
