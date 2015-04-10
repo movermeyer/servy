@@ -3,8 +3,8 @@
 Changelog
 ---------
 
-0.2.2
-+++++
+0.2.2 (2015-04-10)
+++++++++++++++++++
 
 - Server tests coverage
 - server.Service renamed to server.Container
