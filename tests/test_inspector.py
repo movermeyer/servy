@@ -40,39 +40,39 @@ class Inception(object):
 
 class ServiceDetection(unittest.TestCase):
     def test_lambda(self):
-        self.assertTrue(servy.server.ServiceInspector.is_service(lambda x: x))
+        self.assertTrue(servy.server.Inspector.is_service(lambda x: x))
 
     def test_method(self):
-        self.assertTrue(servy.server.ServiceInspector.is_service(Dummy().fn))
+        self.assertTrue(servy.server.Inspector.is_service(Dummy().fn))
 
     def test_callable_class_service(self):
-        self.assertTrue(servy.server.ServiceInspector.is_service(Service()))
+        self.assertTrue(servy.server.Inspector.is_service(Service()))
 
     def test_type(self):
-        self.assertFalse(servy.server.ServiceInspector.is_service(dict))
+        self.assertFalse(servy.server.Inspector.is_service(dict))
 
     def test_int(self):
-        self.assertFalse(servy.server.ServiceInspector.is_service(1))
+        self.assertFalse(servy.server.Inspector.is_service(1))
 
     def test_string(self):
-        self.assertFalse(servy.server.ServiceInspector.is_service("1"))
+        self.assertFalse(servy.server.Inspector.is_service("1"))
 
     def test_dummy_class(self):
-        self.assertFalse(servy.server.ServiceInspector.is_service(Dummy))
+        self.assertFalse(servy.server.Inspector.is_service(Dummy))
 
 
 class ContainerDetection(unittest.TestCase):
     def test_dict(self):
-        self.assertTrue(servy.server.ServiceInspector.is_container({}))
+        self.assertTrue(servy.server.Inspector.is_container({}))
 
     def test_service_class(self):
-        self.assertTrue(servy.server.ServiceInspector.is_container(Service))
+        self.assertTrue(servy.server.Inspector.is_container(Service))
 
     def test_service_class_instance(self):
-        self.assertTrue(servy.server.ServiceInspector.is_container(Service()))
+        self.assertTrue(servy.server.Inspector.is_container(Service()))
 
     def test_dummy_class(self):
-        self.assertFalse(servy.server.ServiceInspector.is_container(Dummy))
+        self.assertFalse(servy.server.Inspector.is_container(Dummy))
 
 
 class PublicMethodsDetection(unittest.TestCase):
@@ -81,7 +81,7 @@ class PublicMethodsDetection(unittest.TestCase):
             '__private': None,
         }
         self.assertEqual(
-            servy.server.ServiceInspector.get_public(items.items()),
+            servy.server.Inspector.get_public(items.items()),
             {},
         )
 
@@ -90,64 +90,64 @@ class PublicMethodsDetection(unittest.TestCase):
             '_private': None,
         }
         self.assertEqual(
-            servy.server.ServiceInspector.get_public(items.items()),
+            servy.server.Inspector.get_public(items.items()),
             {},
         )
 
 
 class Analyze(unittest.TestCase):
     def test_dummy_object(self):
-        containers, services = servy.server.ServiceInspector.analyze(Dummy)
+        containers, services = servy.server.Inspector.analyze(Dummy)
         self.assertEqual(containers, {})
         self.assertEqual(services, {'fn': Dummy.fn})
 
     def test_dummy_instance_object(self):
         dummy = Dummy()
-        containers, services = servy.server.ServiceInspector.analyze(dummy)
+        containers, services = servy.server.Inspector.analyze(dummy)
         self.assertEqual(containers, {})
         self.assertEqual(services, {'fn': dummy.fn})
 
     def test_empty_object(self):
-        containers, services = servy.server.ServiceInspector.analyze(Empty)
+        containers, services = servy.server.Inspector.analyze(Empty)
         self.assertEqual(containers, {})
         self.assertEqual(services, {})
 
     def test_map(self):
-        containers, services = servy.server.ServiceInspector.analyze(Map)
+        containers, services = servy.server.Inspector.analyze(Map)
         self.assertEqual(containers, {'m': Map.m})
         self.assertEqual(services, {})
 
     def test_map_instance(self):
         m = Map()
-        containers, services = servy.server.ServiceInspector.analyze(m)
+        containers, services = servy.server.Inspector.analyze(m)
         self.assertEqual(containers, {'m': m.m})
         self.assertEqual(services, {})
 
     def test_dict(self):
         container = {'fn': lambda x: x}
-        containers, services = servy.server.ServiceInspector.analyze(container)
+        containers, services = servy.server.Inspector.analyze(container)
         self.assertEqual(containers, {})
         self.assertEqual(services, {'fn': container['fn']})
 
 
 class ServiceFinder(unittest.TestCase):
     def test_dummy(self):
-        services = servy.server.ServiceInspector.find(Dummy)
+        services = servy.server.Inspector.find(Dummy)
         self.assertEqual(services, {'fn': Dummy.fn})
 
     def test_dummy_instance(self):
         dummy = Dummy()
-        services = servy.server.ServiceInspector.find(dummy)
+        services = servy.server.Inspector.find(dummy)
         self.assertEqual(services, {'fn': dummy.fn})
 
     def test_empty(self):
-        services = servy.server.ServiceInspector.find(Empty)
+        services = servy.server.Inspector.find(Empty)
         self.assertEqual(services, {})
 
     def test_map(self):
-        services = servy.server.ServiceInspector.find(Map)
+        services = servy.server.Inspector.find(Map)
         self.assertEqual(services, {'m.fn': Map.m['fn']})
 
     def test_service(self):
-        services = servy.server.ServiceInspector.find(Inception)
+        services = servy.server.Inspector.find(Inception)
         self.assertEqual(services, {'service': srv})

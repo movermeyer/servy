@@ -11,7 +11,7 @@ import webob.response
 import servy.proto as proto
 
 
-class ServiceInspector(object):
+class Inspector(object):
 
     @staticmethod
     def is_service(obj):
@@ -75,7 +75,7 @@ class Service(object):
 class Server(object):
     def __init__(self, _server=None, **services):
         if _server:
-            self.services = ServiceInspector.find(_server)
+            self.services = Inspector.find(_server)
         else:
             self.services = {}
         self.services.update(services)

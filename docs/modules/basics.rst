@@ -18,5 +18,5 @@ Service class is recursivly introspected for additional services and containers.
 services
 
 .. note::
-   :class:`servy.server.ServiceInspector` looks for a services in dicts, instances of
+   :class:`servy.server.Inspector` looks for a services in dicts, instances of
    :class:`servy.server.Service` and subclasses of :class:`servy.server.Service`.
