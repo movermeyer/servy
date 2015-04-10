@@ -15,7 +15,7 @@ class Dummy(object):
 
 
 class Map(object):
-    m = {'fn': lambda x:x}
+    m = {'fn': lambda x: x}
 
 
 class Service(servy.server.Service):
@@ -26,6 +26,7 @@ srv = Service()
 
 class Inception(object):
     service = srv
+
 
     class A1(servy.server.Service):
         class A2(servy.server.Service):
@@ -150,4 +151,3 @@ class ServiceFinder(unittest.TestCase):
     def test_service(self):
         services = servy.server.ServiceInspector.find(Inception)
         self.assertEqual(services, {'service': srv})
-
