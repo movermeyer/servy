@@ -77,10 +77,10 @@ class Server(object):
             self.procedures = Inspector.find(_container)
         else:
             self.procedures = {}
-        for name, proc in procedures:
-            if not Inspector.is_procedure(proc):
-                continue
-            self.procedures[name] = proc
+            for name, proc in procedures:
+                if not Inspector.is_procedure(proc):
+                    continue
+                self.procedures[name] = proc
 
     @webob.dec.wsgify
     def __call__(self, request):
