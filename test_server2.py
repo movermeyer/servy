@@ -5,13 +5,13 @@ import wsgiref.simple_server
 import servy.server
 
 
-class Parser(servy.server.Service):
+class Parser(servy.server.Container):
     @classmethod
     def parse_details(cls, data):
         return data.get('details')
 
 
-class Echo(servy.server.Service):
+class Echo(servy.server.Container):
 
     parser = Parser()
 
