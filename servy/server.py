@@ -83,7 +83,19 @@ class Server(object):
     def __call__(self, request):
         if request.method == 'POST':
             return self.rpc(request)
+        elif request.method == 'GET':
+            return self.docs()
         raise webob.exc.HTTPMethodNotAllowed
+
+    def docs(self):
+        docs = {}
+        for name, proc in self.procedures.items():
+            docs[name] = inspect.getdoc(proc)
+
+        content = ''
+        for fn, docstring in docs.items():
+            content = '{}{}\n    {}\n\n'.format(content, fn, docstring)
+        return content
 
     def rpc(self, request):
         procedure = request.path[1:]
@@ -104,5 +116,4 @@ class Server(object):
             message = proto.RemoteException.encode(tb)
             raise webob.exc.HTTPServiceUnavailable(body=message)
 
-        content = proto.Response.encode(content)
-        return webob.response.Response(content)
+        return proto.Response.encode(content)

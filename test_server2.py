@@ -24,7 +24,7 @@ class Echo(servy.server.Container):
 
 
 @servy.server.Server
-class RiverRPC(object):
+class RiverRPC(servy.server.Container):
     echo = Echo
     shit = 1
 
