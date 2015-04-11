@@ -10,4 +10,5 @@ before_script:
   - python -m compileall -f servy
 script:
   - coverage run --source=servy -m unittest discover
-after_success: coveralls
+after_success:
+  - coveralls
