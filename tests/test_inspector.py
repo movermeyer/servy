@@ -40,10 +40,10 @@ class Inception(object):
 
 class ServiceDetection(unittest.TestCase):
     def test_lambda(self):
-        self.assertTrue(servy.server.Inspector.is_procedure(lambda x: x))
+        assert servy.server.Inspector.is_procedure(lambda x: x)
 
     def test_method(self):
-        self.assertTrue(servy.server.Inspector.is_procedure(Dummy().fn))
+        assert servy.server.Inspector.is_procedure(Dummy().fn)
 
     def test_callable_class_service(self):
         self.assertFalse(servy.server.Inspector.is_procedure(Service()))
@@ -63,13 +63,13 @@ class ServiceDetection(unittest.TestCase):
 
 class ContainerDetection(unittest.TestCase):
     def test_dict(self):
-        self.assertTrue(servy.server.Inspector.is_container({}))
+        assert servy.server.Inspector.is_container({})
 
     def test_service_class(self):
-        self.assertTrue(servy.server.Inspector.is_container(Service))
+        assert servy.server.Inspector.is_container(Service)
 
     def test_service_class_instance(self):
-        self.assertTrue(servy.server.Inspector.is_container(Service()))
+        assert servy.server.Inspector.is_container(Service())
 
     def test_dummy_class(self):
         self.assertFalse(servy.server.Inspector.is_container(Dummy))
