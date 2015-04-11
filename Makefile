@@ -1,6 +1,6 @@
 test:
 	flake8
-	nosetests --with-coverage --cover-package=servy ./tests/
+	py.test --cov servy
 
 publish: test docs
 	python setup.py sdist bdist_wheel upload
