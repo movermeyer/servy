@@ -42,7 +42,10 @@ class RequestProto(unittest.TestCase):
         assert content == self.message
 
     def test_decode(self):
-        assert servy.proto.Request.decode(self.message) == ([], {})
+        self.assertEqual(
+            servy.proto.Request.decode(self.message),
+            ([], {}),
+        )
 
 
 class ExceptionProto(unittest.TestCase):

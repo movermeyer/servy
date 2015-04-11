@@ -29,9 +29,9 @@ class ServerInitiation(unittest.TestCase):
         server = servy.server.Server(
             fn=fn,
         )
-        assert server.procedures == {
+        self.assertEqual(server.procedures, {
             'fn': fn,
-        }
+        })
 
     def test_explicit_with_junk(self):
         server = servy.server.Server(
@@ -41,9 +41,9 @@ class ServerInitiation(unittest.TestCase):
 
     def test_decorator_simple_container(self):
         Server = servy.server.Server(Simple)
-        assert Server.procedures == {
+        self.assertEqual(Server.procedures, {
             'fn': Simple.fn,
-        }
+        })
 
     def test_decorator_simple_non_container(self):
         @servy.server.Server
@@ -57,9 +57,9 @@ class ServerInitiation(unittest.TestCase):
         class Server(object):
             c = Complex
 
-        assert Server.procedures == {
+        self.assertEqual(Server.procedures, {
             'c.fn': Complex.fn,
-        }
+        })
 
 
 @servy.server.Server

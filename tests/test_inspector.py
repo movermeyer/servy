@@ -80,13 +80,19 @@ class PublicMethodsDetection(unittest.TestCase):
         items = {
             '__private': None,
         }
-        assert servy.server.Inspector.get_public(items.items()) == {}
+        self.assertEqual(
+            servy.server.Inspector.get_public(items.items()),
+            {},
+        )
 
     def test_single_underscores(self):
         items = {
             '_private': None,
         }
-        assert servy.server.Inspector.get_public(items.items()) == {}
+        self.assertEqual(
+            servy.server.Inspector.get_public(items.items()),
+            {},
+        )
 
 
 class Analyze(unittest.TestCase):
