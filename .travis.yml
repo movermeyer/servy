@@ -5,7 +5,7 @@ python:
   - "pypy"
 install:
   - pip install WebOb==1.4
-  - pip install python-coveralls
+  - pip install coveralls
 before_script:
   - python -m compileall -f servy
 script:
