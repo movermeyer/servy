@@ -14,19 +14,19 @@ import servy.proto
 class Request(unittest.TestCase):
     def test_url(self):
         service = servy.client.Request('localhost', 'serv')
-        assert service.url == 'http://localhost/serv'
+        self.assertEqual(service.url, 'http://localhost/serv')
 
     def test_client_init(self):
         client = servy.client.Client('localhost', 'serv')
-        assert client._Client__service.url == 'http://localhost/serv'
+        self.assertEqual(client._Client__service.url, 'http://localhost/serv')
 
     def test_client_host_with_port(self):
         client = servy.client.Client('localhost:80', 'serv')
-        assert client._Client__service.url == 'http://localhost:80/serv'
+        self.assertEqual(client._Client__service.url, 'http://localhost:80/serv')
 
     def test_client_unicode_values(self):
         client = servy.client.Client(u'localhost:80', u'serv')
-        assert client._Client__service.url == 'http://localhost:80/serv'
+        self.assertEqual(client._Client__service.url, 'http://localhost:80/serv')
 
 
 class RemoteExecution(unittest.TestCase):
@@ -38,7 +38,7 @@ class RemoteExecution(unittest.TestCase):
         content = servy.proto.Response.encode('content')
         with mock.patch('servy.client.Request.read') as read:
             read.return_value = content
-            assert self.client.fn() == servy.proto.Response.decode(content)
+            self.assertEqual(self.client.fn(), servy.proto.Response.decode(content))
         message = servy.proto.Request.encode((), {})
         read.assert_called_once_with(message)
 
