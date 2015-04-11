@@ -1,9 +1,13 @@
+sudo: false
 language: python
 python:
   - "2.7"
   - "pypy"
 install:
-  - pip install WebOb==1.4 mock==1.0.1
-sudo: false
-script: python -m unittest discover
+  - pip install WebOb==1.4
+  - pip install python-coveralls
+before_script:
+  - python -m compileall -f servy
+script:
+  - coverage run --source=servy -m unittest discover
 after_success: coveralls
