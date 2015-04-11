@@ -1,6 +1,7 @@
 test:
 	flake8
-	py.test --cov-report term-missing --cov servy
+	coverage run --source=servy -m unittest discover
+	coverage report -m
 
 publish: test docs
 	python setup.py sdist bdist_wheel upload
