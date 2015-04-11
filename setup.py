@@ -18,7 +18,7 @@ setup(
     name='servy',
     packages=['servy'],
     package_data={'': ['LICENSE']},
-    install_requires = ['WebOb==1.4'],
+    install_requires=['WebOb==1.4'],
     version=version,
     description='Pythonic RPC over RESTful protocol',
     author='Andrey Gubarev',
