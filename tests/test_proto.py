@@ -14,7 +14,7 @@ class ResponseProto(unittest.TestCase):
         })
 
     def test_base_class(self):
-        assert issubclass(servy.proto.Response, servy.proto.Message)
+        self.assertTrue(issubclass(servy.proto.Response, servy.proto.Message))
 
     def test_encode(self):
         content = servy.proto.Response.encode('content')
@@ -35,7 +35,7 @@ class RequestProto(unittest.TestCase):
         })
 
     def test_base_class(self):
-        assert issubclass(servy.proto.Request, servy.proto.Message)
+        self.assertTrue(issubclass(servy.proto.Request, servy.proto.Message))
 
     def test_encode(self):
         content = servy.proto.Request.encode((), {})
@@ -56,7 +56,7 @@ class ExceptionProto(unittest.TestCase):
         })
 
     def test_base_class(self):
-        assert issubclass(servy.proto.RemoteException, servy.proto.Message)
+        self.assertTrue(issubclass(servy.proto.RemoteException, servy.proto.Message))
 
     def test_encode(self):
         content = servy.proto.RemoteException.encode('traceback')
