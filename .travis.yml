@@ -8,4 +8,4 @@ install:
 before_script:
   - python -m compileall -f servy
 script:
-  - python run --source=servy -m unittest discover
+  - python -m unittest discover
