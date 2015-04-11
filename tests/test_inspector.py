@@ -46,19 +46,19 @@ class ServiceDetection(unittest.TestCase):
         assert servy.server.Inspector.is_procedure(Dummy().fn)
 
     def test_callable_class_service(self):
-        assert not servy.server.Inspector.is_procedure(Service())
+        self.assertFalse(servy.server.Inspector.is_procedure(Service()))
 
     def test_type(self):
-        assert not servy.server.Inspector.is_procedure(dict)
+        self.assertFalse(servy.server.Inspector.is_procedure(dict))
 
     def test_int(self):
-        assert not servy.server.Inspector.is_procedure(1)
+        self.assertFalse(servy.server.Inspector.is_procedure(1))
 
     def test_string(self):
-        assert not servy.server.Inspector.is_procedure("1")
+        self.assertFalse(servy.server.Inspector.is_procedure("1"))
 
     def test_dummy_class(self):
-        assert not servy.server.Inspector.is_procedure(Dummy)
+        self.assertFalse(servy.server.Inspector.is_procedure(Dummy))
 
 
 class ContainerDetection(unittest.TestCase):
@@ -72,7 +72,7 @@ class ContainerDetection(unittest.TestCase):
         assert servy.server.Inspector.is_container(Service())
 
     def test_dummy_class(self):
-        assert not servy.server.Inspector.is_container(Dummy)
+        self.assertFalse(servy.server.Inspector.is_container(Dummy))
 
 
 class PublicMethodsDetection(unittest.TestCase):
