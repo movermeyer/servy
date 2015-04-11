@@ -18,10 +18,10 @@ class ResponseProto(unittest.TestCase):
 
     def test_encode(self):
         content = servy.proto.Response.encode('content')
-        self.assertEqual(content, self.message)
+        assert content == self.message
 
     def test_decode(self):
-        self.assertEqual(servy.proto.Response.decode(self.message), 'content')
+        assert servy.proto.Response.decode(self.message) == 'content'
 
 
 class RequestProto(unittest.TestCase):
@@ -39,7 +39,7 @@ class RequestProto(unittest.TestCase):
 
     def test_encode(self):
         content = servy.proto.Request.encode((), {})
-        self.assertEqual(content, self.message)
+        assert content == self.message
 
     def test_decode(self):
         self.assertEqual(
@@ -60,7 +60,7 @@ class ExceptionProto(unittest.TestCase):
 
     def test_encode(self):
         content = servy.proto.RemoteException.encode('traceback')
-        self.assertEqual(content, self.message)
+        assert content == self.message
 
     def test_decode(self):
-        self.assertEqual(servy.proto.RemoteException.decode(self.message), 'traceback')
+        assert servy.proto.RemoteException.decode(self.message) == 'traceback'
