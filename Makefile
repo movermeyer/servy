@@ -1,6 +1,6 @@
 test:
 	flake8
-	py.test --cov servy
+	py.test --cov-report term-missing --cov servy
 
 publish: test docs
 	python setup.py sdist bdist_wheel upload
