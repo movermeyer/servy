@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 import unittest
 
-import pytest
 import webob
 import webob.exc
 
@@ -89,21 +88,21 @@ class ProcedureCall(unittest.TestCase):
         request = webob.Request.blank('/proc')
         request.method = 'PUT'
 
-        with pytest.raises(webob.exc.HTTPMethodNotAllowed):
+        with self.assertRaises(webob.exc.HTTPMethodNotAllowed):
             RPC(request)
 
     def test_proc_not_found(self):
         request = webob.Request.blank('/not_found')
         request.method = 'POST'
 
-        with pytest.raises(webob.exc.HTTPNotFound):
+        with self.assertRaises(webob.exc.HTTPNotFound):
             RPC(request)
 
     def test_no_body(self):
         request = webob.Request.blank('/proc')
         request.method = 'POST'
 
-        with pytest.raises(webob.exc.HTTPBadRequest):
+        with self.assertRaises(webob.exc.HTTPBadRequest):
             RPC(request)
 
     def test_call_without_args(self):
