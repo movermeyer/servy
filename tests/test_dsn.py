@@ -138,3 +138,8 @@ class TestDSN(object):
         r = dsntool.parse(sample_dsn)
         r.set_default('port', 1234)
         assert r.port == 1234
+
+    def test_field_update(self, sample_dsn):
+        r = dsntool.parse(sample_dsn)
+        r.username = 'user'
+        assert r.get_url() == 'scheme://user:password@host/foo'
