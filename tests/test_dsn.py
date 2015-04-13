@@ -100,7 +100,7 @@ class TestDSN(object):
     def test_geturl(self):
         dsn = 'scheme://username:password@host:1234/bar/che?option1=opt_val1&option2=opt_val2#anchor'
         r = dsntool.parse(dsn)
-        assert dsn == r.geturl()
+        assert dsn == r.get_url()
 
     def test_unpack(self):
         dsn = 'scheme://username:password@host:1234/foo'
@@ -135,7 +135,7 @@ class TestDSN(object):
         r = dsntool.parse(dsn)
         assert None == r.port
 
-        r.setdefault('port', 1234)
+        r.set_default('port', 1234)
         assert 1234 == r.port
 
         r = dsntool.parse(dsn, port=1235)

@@ -30,7 +30,7 @@ def parse(dsn, **defaults):
             else:
                 options[k] = kv[0]
 
-    r = ParseResult(
+    r = DSN(
         scheme=scheme,
         hostname=url.hostname,
         path=url.path,
@@ -43,12 +43,12 @@ def parse(dsn, **defaults):
         query_str=url.query,
     )
     for k, v in defaults.iteritems():
-        r.setdefault(k, v)
+        r.set_default(k, v)
 
     return r
 
 
-class ParseResult(object):
+class DSN(object):
     ''' Hold the results of a parsed dsn.
     This is very similar to urlparse.ParseResult tuple.
 
@@ -70,15 +70,13 @@ class ParseResult(object):
         query_str -- the raw query string
         port
         fragment
-        anchor -- same as fragment, just an alternative name
     '''
-    def __init__(self, **kwargs):
-        for k, v in kwargs.iteritems():
+    def __init__(self, **kw):
+        for k, v in kw.items():
             setattr(self, k, v)
 
     def __iter__(self):
-        mapping = ['scheme', 'netloc', 'path', 'params', 'query', 'fragment']
-        for k in mapping:
+        for k in ('scheme', 'netloc', 'path', 'params', 'query', 'fragment'):
             yield getattr(self, k, '')
 
     def __getitem__(self, index):
@@ -134,12 +132,7 @@ class ParseResult(object):
 
         return hostloc
 
-    @property
-    def anchor(self):
-        '''alternative name for the fragment'''
-        return self.fragment
-
-    def setdefault(self, key, value):
+    def set_default(self, key, value):
         ''' Set a default value for key.
 
         This is different than dict's setdefault because it will set default either
@@ -153,7 +146,7 @@ class ParseResult(object):
         if not getattr(self, key, None):
             setattr(self, key, value)
 
-    def geturl(self):
+    def get_url(self):
         '''return the dsn back into url form'''
         return urlparse.urlunparse((
             self.scheme,
