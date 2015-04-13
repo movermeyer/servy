@@ -1,18 +1,21 @@
 import urlparse
 import re
 
+DSN_REGEXP = re.compile(r'^\S+://\S+')
+
 
 def parse(dsn, **defaults):
-    '''
-    parse a dsn to parts similar to parseurl
+    ''' Parse a dsn to parts similar to urlparse.
+    This is a nuts function that can serve as a good basis to parsing a custom dsn
 
-    this is a nuts function that can serve as a good basis to parsing a custom dsn
+    :param dsn: the dsn to parse
+    :type dsn: str
+    :param defaults: any values you want to have defaults for if they aren't in the dsn
+    :type defaults: dict
 
-    dsn -- string -- the dsn to parse
-    **defaults -- dict -- any values you want to have defaults for if they aren't in the dsn
-    return -- ParseResult() tuple
+    :returns: ParseResult() tuple
     '''
-    assert re.match("^\S+://\S+", dsn), "{} is invalid, only full dsn urls (scheme://host...) allowed".format(dsn)
+    assert DSN_REGEXP.match(dsn), "{} is invalid, only full dsn urls (scheme://host...) allowed".format(dsn)
 
     first_colon = dsn.find(':')
     scheme = dsn[0:first_colon]
@@ -46,14 +49,13 @@ def parse(dsn, **defaults):
 
 
 class ParseResult(object):
-    '''
-    hold the results of a parsed dsn
-
-    this is very similar to urlparse.ParseResult tuple
+    ''' Hold the results of a parsed dsn.
+    This is very similar to urlparse.ParseResult tuple.
 
     http://docs.python.org/2/library/urlparse.html#results-of-urlparse-and-urlsplit
 
-    it exposes the following attributes --
+    It exposes the following attributes:
+
         scheme
         schemes -- if your scheme has +'s in it, then this will contain a list of schemes split by +
         path
@@ -137,19 +139,19 @@ class ParseResult(object):
         '''alternative name for the fragment'''
         return self.fragment
 
-    def setdefault(self, key, val):
-        '''
-        set a default value for key
+    def setdefault(self, key, value):
+        ''' Set a default value for key.
 
-        this is different than dict's setdefault because it will set default either
+        This is different than dict's setdefault because it will set default either
         if the key doesn't exist, or if the value at the key evaluates to False, so
-        an empty string or a None will value will be updated
+        an empty string or a None will value will be updated.
 
-        key -- string -- the attribute to update
-        val -- mixed -- the attributes new value if key has a current value that evaluates to False
+        :param key: the item to update
+        :type key: str
+        :param value: the items new value if key has a current value that evaluates to False
         '''
         if not getattr(self, key, None):
-            setattr(self, key, val)
+            setattr(self, key, value)
 
     def geturl(self):
         '''return the dsn back into url form'''

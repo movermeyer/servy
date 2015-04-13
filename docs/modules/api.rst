@@ -11,3 +11,6 @@ Client
 
 .. autoclass:: servy.server.Server
    :members:
+
+.. automodule:: servy.utils.dsntool
+   :members:
