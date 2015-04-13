@@ -1,5 +1,6 @@
-import urlparse
+import collections
 import re
+import urlparse
 
 DSN_REGEXP = re.compile(r'^\S+://\S+')
 
@@ -48,7 +49,7 @@ def parse(dsn, **defaults):
     return r
 
 
-class DSN(object):
+class DSN(collections.MutableMapping):
     ''' Hold the results of a parsed dsn.
     This is very similar to urlparse.ParseResult tuple.
 
@@ -71,26 +72,27 @@ class DSN(object):
         port
         fragment
     '''
+    FIELDS = ('scheme', 'netloc', 'path', 'params', 'query', 'fragment')
+
     def __init__(self, **kw):
-        for k, v in kw.items():
-            setattr(self, k, v)
+        for field in kw:
+            setattr(self, field, kw[field])
 
     def __iter__(self):
-        for k in ('scheme', 'netloc', 'path', 'params', 'query', 'fragment'):
-            yield getattr(self, k, '')
+        for f in self.FIELDS:
+            yield getattr(self, f, '')
 
-    def __getitem__(self, index):
-        index = int(index)
-        mapping = {
-            0: 'scheme',
-            1: 'netloc',
-            2: 'path',
-            3: 'params',
-            4: 'query',
-            5: 'fragment',
-        }
+    def __len__(self):
+        return len(iter(self))
 
-        return getattr(self, mapping[index], '')
+    def __getitem__(self, field):
+        return getattr(self, field, None)
+
+    def __setitem__(self, field, value):
+        setattr(self, field, value)
+
+    def __delitem__(self, field):
+        delattr(self, field)
 
     @property
     def schemes(self):
