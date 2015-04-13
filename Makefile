@@ -1,5 +1,6 @@
 test:
 	flake8
+	python -m compileall -f servy tests
 	py.test --cov-report term-missing --cov servy
 
 publish: test docs

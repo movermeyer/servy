@@ -7,7 +7,7 @@ import webob
 import webob.exc
 
 import servy.server
-import servy.proto as proto
+import servy.message as message
 
 
 def fn():
@@ -109,15 +109,15 @@ class ProcedureCall(unittest.TestCase):
     def test_call_without_args(self):
         request = webob.Request.blank('/proc')
         request.method = 'POST'
-        request.body = proto.Request.encode((), {})
+        request.body = message.Request.encode((), {})
 
-        response = proto.Response.decode(RPC(request))
+        response = message.Response.decode(RPC(request))
         assert response == 'rpc'
 
     def test_call_with_args(self):
         request = webob.Request.blank('/proc_ext')
         request.method = 'POST'
-        request.body = proto.Request.encode(('O'), {'suffix': 'O'})
+        request.body = message.Request.encode(('O'), {'suffix': 'O'})
 
-        response = proto.Response.decode(RPC(request))
+        response = message.Response.decode(RPC(request))
         assert response == 'O_O'

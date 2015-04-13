@@ -8,7 +8,7 @@ import pytest
 
 import servy.client
 import servy.exc
-import servy.proto
+import servy.message
 
 
 @pytest.fixture
@@ -41,11 +41,11 @@ class TestRequest(object):
 
 class TestRemoteExecution(object):
     def test_remote_execution(self, client):
-        content = servy.proto.Response.encode('content')
+        content = servy.message.Response.encode('content')
         with mock.patch('servy.client.Request.read') as read:
             read.return_value = content
-            assert client.fn() == servy.proto.Response.decode(content)
-        message = servy.proto.Request.encode((), {})
+            assert client.fn() == servy.message.Response.decode(content)
+        message = servy.message.Request.encode((), {})
         read.assert_called_once_with(message)
 
     def test_failed_remote_execution(self, client):
@@ -61,7 +61,7 @@ class TestRemoteExecution(object):
     def test_http_exception_503(self, client, service):
         with mock.patch('servy.client.Request.read') as read:
             fp = io.StringIO()
-            fp.write(unicode(servy.proto.RemoteException.encode('traceback')))
+            fp.write(unicode(servy.message.RemoteException.encode('traceback')))
             fp.seek(0)
             read.side_effect = urllib2.HTTPError(service.url, 503, 'Service Unavailable', [], fp)
             with pytest.raises(servy.exc.RemoteException):

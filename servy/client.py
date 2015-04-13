@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import urllib2
 import urlparse
 
-import servy.proto as proto
+import servy.message
 import servy.exc as exc
 
 
@@ -45,7 +45,7 @@ class Client(object):
     def __call__(self, *args, **kw):
         if not self.__service:
             raise TypeError('\'service\' argument must be a string, not \'NoneType\'')
-        message = proto.Request.encode(args, kw)
+        message = servy.message.Request.encode(args, kw)
         try:
             content = self.__service.read(message)
         except urllib2.HTTPError as e:
@@ -54,11 +54,11 @@ class Client(object):
             elif e.code == 503:
                 message = e.read()
                 try:
-                    tb = proto.RemoteException.decode(message)
+                    tb = servy.message.RemoteException.decode(message)
                 except (ValueError, TypeError):
                     tb = ''
                 raise exc.RemoteException(tb)
             else:
                 raise
 
-        return proto.Response.decode(content)
+        return servy.message.Response.decode(content)
