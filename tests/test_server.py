@@ -37,7 +37,7 @@ class ServerInitiation(unittest.TestCase):
         server = servy.server.Server(
             junk=type,
         )
-        self.assertEqual(server.procedures, {})
+        assert server.procedures == {}
 
     def test_decorator_simple_container(self):
         Server = servy.server.Server(Simple)
@@ -50,7 +50,7 @@ class ServerInitiation(unittest.TestCase):
         class Server(object):
             simple = Simple
 
-        self.assertEqual(Server.procedures, {})
+        assert Server.procedures == {}
 
     def test_decorator_complex(self):
         @servy.server.Server
@@ -82,7 +82,7 @@ class ProcedureCall(unittest.TestCase):
         request.method = 'GET'
 
         response = RPC(request)
-        self.assertEqual(response, 'proc\n    None\n\nproc_ext\n    None\n\n')
+        assert response == 'proc\n    None\n\nproc_ext\n    None\n\n'
 
     def test_method_not_allowed(self):
         request = webob.Request.blank('/proc')
@@ -111,7 +111,7 @@ class ProcedureCall(unittest.TestCase):
         request.body = proto.Request.encode((), {})
 
         response = proto.Response.decode(RPC(request))
-        self.assertEqual(response, 'rpc')
+        assert response == 'rpc'
 
     def test_call_with_args(self):
         request = webob.Request.blank('/proc_ext')
@@ -119,4 +119,4 @@ class ProcedureCall(unittest.TestCase):
         request.body = proto.Request.encode(('O'), {'suffix': 'O'})
 
         response = proto.Response.decode(RPC(request))
-        self.assertEqual(response, 'O_O')
+        assert response == 'O_O'

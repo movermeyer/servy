@@ -8,4 +8,4 @@ import servy.exc
 class StringRepresentation(unittest.TestCase):
     def test_service_not_found_str_repr(self):
         exception = servy.exc.ServiceNotFound('serv')
-        self.assertEqual(str(exception), 'serv')
+        assert str(exception) == 'serv'

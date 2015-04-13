@@ -98,56 +98,56 @@ class PublicMethodsDetection(unittest.TestCase):
 class Analyze(unittest.TestCase):
     def test_dummy_object(self):
         containers, services = servy.server.Inspector.analyze(Dummy)
-        self.assertEqual(containers, {})
-        self.assertEqual(services, {'fn': Dummy.fn})
+        assert containers == {}
+        assert services == {'fn': Dummy.fn}
 
     def test_dummy_instance_object(self):
         dummy = Dummy()
         containers, services = servy.server.Inspector.analyze(dummy)
-        self.assertEqual(containers, {})
-        self.assertEqual(services, {'fn': dummy.fn})
+        assert containers == {}
+        assert services == {'fn': dummy.fn}
 
     def test_empty_object(self):
         containers, services = servy.server.Inspector.analyze(Empty)
-        self.assertEqual(containers, {})
-        self.assertEqual(services, {})
+        assert containers == {}
+        assert services == {}
 
     def test_map(self):
         containers, services = servy.server.Inspector.analyze(Map)
-        self.assertEqual(containers, {'m': Map.m})
-        self.assertEqual(services, {})
+        assert containers == {'m': Map.m}
+        assert services == {}
 
     def test_map_instance(self):
         m = Map()
         containers, services = servy.server.Inspector.analyze(m)
-        self.assertEqual(containers, {'m': m.m})
-        self.assertEqual(services, {})
+        assert containers == {'m': m.m}
+        assert services == {}
 
     def test_dict(self):
         container = {'fn': lambda x: x}
         containers, services = servy.server.Inspector.analyze(container)
-        self.assertEqual(containers, {})
-        self.assertEqual(services, {'fn': container['fn']})
+        assert containers == {}
+        assert services == {'fn': container['fn']}
 
 
 class ServiceFinder(unittest.TestCase):
     def test_dummy(self):
         services = servy.server.Inspector.find(Dummy)
-        self.assertEqual(services, {'fn': Dummy.fn})
+        assert services == {'fn': Dummy.fn}
 
     def test_dummy_instance(self):
         dummy = Dummy()
         services = servy.server.Inspector.find(dummy)
-        self.assertEqual(services, {'fn': dummy.fn})
+        assert services == {'fn': dummy.fn}
 
     def test_empty(self):
         services = servy.server.Inspector.find(Empty)
-        self.assertEqual(services, {})
+        assert services == {}
 
     def test_map(self):
         services = servy.server.Inspector.find(Map)
-        self.assertEqual(services, {'m.fn': Map.m['fn']})
+        assert services == {'m.fn': Map.m['fn']}
 
     def test_service(self):
         services = servy.server.Inspector.find(Inception)
-        self.assertEqual(services, {})
+        assert services == {}
