@@ -96,18 +96,18 @@ def sample_dsn():
 
 
 class TestDSN(object):
-    def test_parse(self, dsn_example):
+    def test_DSN(self, dsn_example):
         for dsn, expected in dsn_example:
-            r = dsntool.parse(dsn)
+            r = dsntool.DSN(dsn)
             for k, v in expected.iteritems():
                 assert v == getattr(r, k)
 
         with pytest.raises(AssertionError):
-            r = dsntool.parse('//host.com:1234')
+            r = dsntool.DSN('//host.com:1234')
 
     def test_geturl(self):
         dsn = 'scheme://username:password@host:1234/bar/che?option1=opt_val1&option2=opt_val2#anchor'
-        r = dsntool.parse(dsn)
+        r = dsntool.DSN(dsn)
         assert dsn == r.get_url()
 
     def test_unpack(self):
@@ -120,7 +120,7 @@ class TestDSN(object):
             'query': {},
             'fragment': ''
         }
-        scheme, netloc, path, params, query, fragment = dsntool.parse(dsn)
+        scheme, netloc, path, params, query, fragment = dsntool.DSN(dsn)
         assert scheme == 'scheme'
         assert netloc == 'username:password@host:1234'
         assert path == '/foo'
@@ -129,17 +129,17 @@ class TestDSN(object):
         assert fragment == ''
 
     def test_set_default_missed(self, sample_dsn):
-        assert dsntool.parse(sample_dsn).port == None
+        assert dsntool.DSN(sample_dsn).port == None
 
     def test_set_default_init(self, sample_dsn):
-        assert dsntool.parse(sample_dsn, port=1235).port == 1235
+        assert dsntool.DSN(sample_dsn, port=1235).port == 1235
 
     def test_set_default_call(self, sample_dsn):
-        r = dsntool.parse(sample_dsn)
+        r = dsntool.DSN(sample_dsn)
         r.set_default('port', 1234)
         assert r.port == 1234
 
     def test_field_update(self, sample_dsn):
-        r = dsntool.parse(sample_dsn)
+        r = dsntool.DSN(sample_dsn)
         r.username = 'user'
         assert r.get_url() == 'scheme://user:password@host/foo'

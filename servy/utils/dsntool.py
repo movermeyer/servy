@@ -2,51 +2,7 @@ import collections
 import re
 import urlparse
 
-DSN_REGEXP = re.compile(r'^\S+://\S+')
 
-
-def parse(dsn, **defaults):
-    ''' Parse a dsn to parts similar to urlparse.
-    This is a nuts function that can serve as a good basis to parsing a custom dsn
-
-    :param dsn: the dsn to parse
-    :type dsn: str
-    :param defaults: any values you want to have defaults for if they aren't in the dsn
-    :type defaults: dict
-
-    :returns: ParseResult() tuple
-    '''
-    assert DSN_REGEXP.match(dsn), "{} is invalid, only full dsn urls (scheme://host...) allowed".format(dsn)
-
-    first_colon = dsn.find(':')
-    scheme = dsn[0:first_colon]
-    dsn_url = dsn[first_colon+1:]
-    url = urlparse.urlparse(dsn_url)
-
-    options = {}
-    if url.query:
-        for k, kv in urlparse.parse_qs(url.query, True, True).iteritems():
-            if len(kv) > 1:
-                options[k] = kv
-            else:
-                options[k] = kv[0]
-
-    r = DSN(
-        scheme=scheme,
-        hostname=url.hostname,
-        path=url.path,
-        params=url.params,
-        query=options,
-        fragment=url.fragment,
-        username=url.username,
-        password=url.password,
-        port=url.port,
-        query_str=url.query,
-    )
-    for k, v in defaults.iteritems():
-        r.set_default(k, v)
-
-    return r
 
 
 class DSN(collections.MutableMapping):
@@ -72,11 +28,48 @@ class DSN(collections.MutableMapping):
         port
         fragment
     '''
+    DSN_REGEXP = re.compile(r'^\S+://\S+')
     FIELDS = ('scheme', 'netloc', 'path', 'params', 'query', 'fragment')
 
-    def __init__(self, **kw):
-        for field in kw:
-            setattr(self, field, kw[field])
+    def __init__(self, dsn, **defaults):
+        ''' Parse a dsn to parts similar to urlparse.
+        This is a nuts function that can serve as a good basis to parsing a custom dsn
+
+        :param dsn: the dsn to parse
+        :type dsn: str
+        :param defaults: any values you want to have defaults for if they aren't in the dsn
+        :type defaults: dict
+        '''
+
+        assert self.DSN_REGEXP.match(dsn), \
+            "{} is invalid, only full dsn urls (scheme://host...) allowed".format(dsn)
+
+        first_colon = dsn.find(':')
+        scheme = dsn[0:first_colon]
+        dsn_url = dsn[first_colon+1:]
+        url = urlparse.urlparse(dsn_url)
+
+        options = {}
+        if url.query:
+            for k, kv in urlparse.parse_qs(url.query, True, True).iteritems():
+                if len(kv) > 1:
+                    options[k] = kv
+                else:
+                    options[k] = kv[0]
+
+        self.scheme = scheme
+        self.hostname = url.hostname
+        self.path = url.path
+        self.params = url.params
+        self.query = options
+        self.fragment = url.fragment
+        self.username = url.username
+        self.password = url.password
+        self.port = url.port
+        self.query_str = url.query
+
+        for k, v in defaults.iteritems():
+            self.set_default(k, v)
 
     def __iter__(self):
         for f in self.FIELDS:
