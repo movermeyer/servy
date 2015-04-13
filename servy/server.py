@@ -8,7 +8,7 @@ import webob.exc
 import webob.dec
 import webob.response
 
-import servy.proto as proto
+import servy.message as message
 
 
 class Inspector(object):
@@ -108,7 +108,7 @@ class Server(object):
         procedure = self.procedures[procedure]
 
         try:
-            args, kw = proto.Request.decode(request.body)
+            args, kw = message.Request.decode(request.body)
         except:
             raise webob.exc.HTTPBadRequest
 
@@ -116,7 +116,7 @@ class Server(object):
             content = procedure(*args, **kw)
         except:
             tb = ''.join(traceback.format_exception(*sys.exc_info()))
-            message = proto.RemoteException.encode(tb)
-            raise webob.exc.HTTPServiceUnavailable(body=message)
+            body = message.RemoteException.encode(tb)
+            raise webob.exc.HTTPServiceUnavailable(body=body)
 
-        return proto.Response.encode(content)
+        return message.Response.encode(content)

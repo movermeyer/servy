@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import json
 import unittest
 
-import servy.proto
+import servy.message
 
 
 class ResponseProto(unittest.TestCase):
@@ -14,14 +14,14 @@ class ResponseProto(unittest.TestCase):
         })
 
     def test_base_class(self):
-        assert issubclass(servy.proto.Response, servy.proto.Message)
+        assert issubclass(servy.message.Response, servy.message.Message)
 
     def test_encode(self):
-        content = servy.proto.Response.encode('content')
+        content = servy.message.Response.encode('content')
         assert content == self.message
 
     def test_decode(self):
-        assert servy.proto.Response.decode(self.message) == 'content'
+        assert servy.message.Response.decode(self.message) == 'content'
 
 
 class RequestProto(unittest.TestCase):
@@ -35,14 +35,14 @@ class RequestProto(unittest.TestCase):
         })
 
     def test_base_class(self):
-        assert issubclass(servy.proto.Request, servy.proto.Message)
+        assert issubclass(servy.message.Request, servy.message.Message)
 
     def test_encode(self):
-        content = servy.proto.Request.encode((), {})
+        content = servy.message.Request.encode((), {})
         assert content == self.message
 
     def test_decode(self):
-        assert servy.proto.Request.decode(self.message) == ([], {})
+        assert servy.message.Request.decode(self.message) == ([], {})
 
 
 class ExceptionProto(unittest.TestCase):
@@ -53,11 +53,11 @@ class ExceptionProto(unittest.TestCase):
         })
 
     def test_base_class(self):
-        assert issubclass(servy.proto.RemoteException, servy.proto.Message)
+        assert issubclass(servy.message.RemoteException, servy.message.Message)
 
     def test_encode(self):
-        content = servy.proto.RemoteException.encode('traceback')
+        content = servy.message.RemoteException.encode('traceback')
         assert content == self.message
 
     def test_decode(self):
-        assert servy.proto.RemoteException.decode(self.message) == 'traceback'
+        assert servy.message.RemoteException.decode(self.message) == 'traceback'

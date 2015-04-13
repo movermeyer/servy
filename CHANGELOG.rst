@@ -6,7 +6,8 @@ Changelog
 0.2.5
 +++++
 
--
+- Convert client.Request to base protocol
+- Rename proto to message
 
 0.2.2 (2015-04-10)
 ++++++++++++++++++
