@@ -2,6 +2,7 @@ import pytest
 
 import servy.utils.dsntool as dsntool
 
+
 @pytest.fixture
 def dsn_example():
     return [
@@ -112,14 +113,6 @@ class TestDSN(object):
 
     def test_unpack(self):
         dsn = 'scheme://username:password@host:1234/foo'
-        dsn_test = {
-            'scheme': 'scheme',
-            'netloc': 'username:password@host:1234',
-            'path': '/foo',
-            'params': "",
-            'query': {},
-            'fragment': ''
-        }
         scheme, netloc, path, params, query, fragment = dsntool.DSN(dsn)
         assert scheme == 'scheme'
         assert netloc == 'username:password@host:1234'
@@ -129,7 +122,7 @@ class TestDSN(object):
         assert fragment == ''
 
     def test_set_default_missed(self, sample_dsn):
-        assert dsntool.DSN(sample_dsn).port == None
+        assert dsntool.DSN(sample_dsn).port is None
 
     def test_set_default_init(self, sample_dsn):
         assert dsntool.DSN(sample_dsn, port=1235).port == 1235

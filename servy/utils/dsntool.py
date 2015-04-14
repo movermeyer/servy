@@ -3,8 +3,6 @@ import re
 import urlparse
 
 
-
-
 class DSN(collections.MutableMapping):
     ''' Hold the results of a parsed dsn.
     This is very similar to urlparse.ParseResult tuple.
