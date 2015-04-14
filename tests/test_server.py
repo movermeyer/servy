@@ -6,6 +6,7 @@ import pytest
 import webob
 import webob.exc
 
+import servy.protocol.http as http
 import servy.server
 import servy.inspector
 import servy.message as message
@@ -79,19 +80,12 @@ class RPC(object):
 
 
 class ProcedureCall(unittest.TestCase):
-    def test_docs(self):
-        request = webob.Request.blank('/')
-        request.method = 'GET'
-
-        response = RPC(request)
-        assert response == 'proc\n    None\n\nproc_ext\n    None\n\n'
-
     def test_method_not_allowed(self):
         request = webob.Request.blank('/proc')
         request.method = 'PUT'
 
         with pytest.raises(webob.exc.HTTPMethodNotAllowed):
-            RPC(request)
+            http.Reply(RPC).recv(request)
 
     def test_proc_not_found(self):
         request = webob.Request.blank('/not_found')

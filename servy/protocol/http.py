@@ -1,8 +1,10 @@
 from __future__ import absolute_import
 
-
 import urllib2
 import urlparse
+
+import webob.dec
+import webob.exc
 
 import servy.exc
 import servy.protocol.abc
@@ -44,3 +46,14 @@ class Request(servy.protocol.abc.Request):
                 raise
         else:
             return content
+
+
+class Reply(servy.protocol.abc.Reply):
+    @webob.dec.wsgify
+    def recv(self, request):
+        if request.method == 'POST':
+            return self.server.rpc(request)
+        raise webob.exc.HTTPMethodNotAllowed
+
+    def bind(self, addr):
+        pass

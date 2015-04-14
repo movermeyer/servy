@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import inspect
 import sys
 import traceback
 
@@ -23,25 +22,7 @@ class Server(object):
                     continue
                 self.procedures[name] = proc
 
-    @webob.dec.wsgify
     def __call__(self, request):
-        if request.method == 'POST':
-            return self.rpc(request)
-        elif request.method == 'GET':
-            return self.docs()
-        raise webob.exc.HTTPMethodNotAllowed
-
-    def docs(self):
-        docs = {}
-        for name, proc in self.procedures.items():
-            docs[name] = inspect.getdoc(proc)
-
-        content = ''
-        for fn, docstring in docs.items():
-            content = '{}{}\n    {}\n\n'.format(content, fn, docstring)
-        return content
-
-    def rpc(self, request):
         procedure = request.path[1:]
         if procedure not in self.procedures:
             raise webob.exc.HTTPNotFound

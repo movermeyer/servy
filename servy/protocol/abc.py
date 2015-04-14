@@ -10,11 +10,12 @@ class Request(object):
 
 
 class Reply(object):
-    def __init__(self):
+    def __init__(self, server, addr=None):
+        self.server = server
+        self.bind(addr)
+
+    def bind(self, addr):
         pass
 
-    def bind(self):
-        pass
-
-    def recv(self):
+    def recv(self, message):
         pass
