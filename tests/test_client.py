@@ -35,13 +35,13 @@ class TestRemoteExecution(object):
         read.assert_called_once_with(message)
 
     def test_http_exception_404(self, client):
-        with mock.patch('servy.client.Client.PROTOCOL.read') as read:
+        with mock.patch('servy.protocol.http.urllib2.urlopen') as read:
             read.side_effect = urllib2.HTTPError(str(client.dsn), 404, 'Not Found', [], io.StringIO())
             with pytest.raises(servy.exc.ServiceNotFound):
                 client.fn()
 
     def test_http_exception_503(self, client):
-        with mock.patch('servy.client.Client.PROTOCOL.read') as read:
+        with mock.patch('servy.protocol.http.urllib2.urlopen') as read:
             fp = io.StringIO()
             fp.write(unicode(servy.message.RemoteException.encode('traceback')))
             fp.seek(0)
@@ -50,13 +50,13 @@ class TestRemoteExecution(object):
                 client.fn()
 
     def test_http_exception_503_failed(self, client):
-        with mock.patch('servy.client.Client.PROTOCOL.read') as read:
+        with mock.patch('servy.protocol.http.urllib2.urlopen') as read:
             read.side_effect = urllib2.HTTPError(str(client.dsn), 503, 'Service Unavailable', [], io.StringIO())
             with pytest.raises(servy.exc.RemoteException):
                 client.fn()
 
     def test_uncovered_http_exception(self, client):
-        with mock.patch('servy.client.Client.PROTOCOL.read') as read:
+        with mock.patch('servy.protocol.http.urllib2.urlopen') as read:
             read.side_effect = urllib2.HTTPError(str(client.dsn), 600, 'Magic', [], io.StringIO())
             with pytest.raises(urllib2.HTTPError):
                 client.fn()

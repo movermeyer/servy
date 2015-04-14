@@ -4,6 +4,8 @@ from __future__ import absolute_import
 import urllib2
 import urlparse
 
+import servy.exc
+
 
 class Request(object):
     def __init__(self, dsn):
@@ -22,4 +24,19 @@ class Request(object):
         return urlparse.urlunparse(urlparse.ParseResult(**{k: v or '' for k, v in url.iteritems()}))
 
     def read(self, message):
-        return urllib2.urlopen(self.url, message).read()
+        try:
+            content = urllib2.urlopen(self.url, message).read()
+        except urllib2.HTTPError as e:
+            if e.code == 404:
+                raise servy.exc.ServiceNotFound(self.dsn.path)
+            elif e.code == 503:
+                message = e.read()
+                try:
+                    tb = servy.message.RemoteException.decode(message)
+                except (ValueError, TypeError):
+                    tb = ''
+                raise servy.exc.RemoteException(tb)
+            else:
+                raise
+        else:
+            return content
