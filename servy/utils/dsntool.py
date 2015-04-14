@@ -151,3 +151,6 @@ class DSN(collections.MutableMapping):
             self.query_str,
             self.fragment,
         ))
+
+    def copy(self):
+        return DSN(self.get_url())

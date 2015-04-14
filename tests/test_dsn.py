@@ -143,3 +143,7 @@ class TestDSN(object):
         r = dsntool.DSN(sample_dsn)
         r.username = 'user'
         assert r.get_url() == 'scheme://user:password@host/foo'
+
+    def test_copy(self, sample_dsn):
+        r = dsntool.DSN(sample_dsn)
+        assert r.copy().get_url() == r.get_url()
