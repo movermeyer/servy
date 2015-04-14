@@ -13,8 +13,9 @@ class Client(object):
 
     def __getattr__(self, name):
         dsn = self.__dsn.copy()
-        if dsn.path == '/':
-            dsn.path = '{}{}'.format(dsn.path, name)
+        print dsn
+        if dsn.path in ('', '/'):
+            dsn.path = '/{}'.format(name)
         else:
             dsn.path = '{}.{}'.format(dsn.path, name)
         return Client(str(dsn))

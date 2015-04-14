@@ -52,7 +52,7 @@ class Reply(servy.protocol.abc.Reply):
     @webob.dec.wsgify
     def recv(self, request):
         if request.method == 'POST':
-            return self.server.rpc(request)
+            return self.server(request)
         raise webob.exc.HTTPMethodNotAllowed
 
     def bind(self, addr):
