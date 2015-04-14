@@ -1,56 +1,35 @@
 from __future__ import absolute_import
 
 import urllib2
-import urlparse
 
 import servy.message
+import servy.protocol.http as http
 import servy.exc as exc
-
-
-class Request(object):
-    def __init__(self, host, name):
-        self.host = host
-        self.name = name
-
-    @property
-    def url(self):
-        url = {
-            'scheme': 'http',
-            'netloc': self.host,
-            'path': self.name,
-            'params': '',
-            'query': '',
-            'fragment': '',
-        }
-        return urlparse.urlunparse(urlparse.ParseResult(**{k: v or '' for k, v in url.iteritems()}))
-
-    def read(self, message):
-        return urllib2.urlopen(self.url, message).read()
+import servy.utils.dsntool as dsntool
 
 
 class Client(object):
-    def __init__(self, host, service=None):
-        self.host = host
-        if service:
-            service = Request(host, service)
-        self.__service = service
+    PROTOCOL = http.Request
+
+    def __init__(self, dsn):
+        self.__dsn = dsntool.DSN(dsn)
 
     def __getattr__(self, name):
-        if self.__service:
-            service = '{}.{}'.format(self.__service.name, name)
+        dsn = self.__dsn.copy()
+        if dsn.path == '/':
+            dsn.path = '{}{}'.format(dsn.path, name)
         else:
-            service = name
-        return Client(self.host, service)
+            dsn.path = '{}.{}'.format(dsn.path, name)
+        return Client(str(dsn))
 
     def __call__(self, *args, **kw):
-        if not self.__service:
-            raise TypeError('\'service\' argument must be a string, not \'NoneType\'')
         message = servy.message.Request.encode(args, kw)
+        proto = self.PROTOCOL(self.__dsn)
         try:
-            content = self.__service.read(message)
+            content = proto.read(message)
         except urllib2.HTTPError as e:
             if e.code == 404:
-                raise exc.ServiceNotFound(self.__service.name)
+                raise exc.ServiceNotFound(self.__dsn.path)
             elif e.code == 503:
                 message = e.read()
                 try:
@@ -60,5 +39,4 @@ class Client(object):
                 raise exc.RemoteException(tb)
             else:
                 raise
-
         return servy.message.Response.decode(content)
