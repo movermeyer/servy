@@ -5,10 +5,14 @@ import urllib2
 import urlparse
 
 import servy.exc
+import servy.protocol.abc
 
 
-class Request(object):
-    def __init__(self, dsn):
+class Request(servy.protocol.abc.Request):
+    def __init__(self):
+        self.dsn = None
+
+    def connect(self, dsn):
         self.dsn = dsn
 
     @property
@@ -23,7 +27,7 @@ class Request(object):
         }
         return urlparse.urlunparse(urlparse.ParseResult(**{k: v or '' for k, v in url.iteritems()}))
 
-    def read(self, message):
+    def send(self, message):
         try:
             content = urllib2.urlopen(self.url, message).read()
         except urllib2.HTTPError as e:

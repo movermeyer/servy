@@ -6,7 +6,7 @@ import servy.utils.dsntool as dsntool
 
 
 class Client(object):
-    PROTOCOL = http.Request
+    PROTOCOL = http
 
     def __init__(self, dsn):
         self.__dsn = dsntool.DSN(dsn)
@@ -21,6 +21,7 @@ class Client(object):
 
     def __call__(self, *args, **kw):
         message = servy.message.Request.encode(args, kw)
-        proto = self.PROTOCOL(self.__dsn)
-        content = proto.read(message)
+        req = self.PROTOCOL.Request()
+        req.connect(self.__dsn)
+        content = req.send(message)
         return servy.message.Response.decode(content)
