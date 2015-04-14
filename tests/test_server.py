@@ -7,6 +7,7 @@ import webob
 import webob.exc
 
 import servy.server
+import servy.inspector
 import servy.message as message
 
 
@@ -20,7 +21,7 @@ class Simple(object):
         pass
 
 
-class Complex(servy.server.Container):
+class Complex(servy.inspector.Container):
     simple = Simple
     fn = fn
 
